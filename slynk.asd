@@ -19,7 +19,7 @@
 
 (defsystem :slynk
   :components
-  ((:module "slynk"
+  ((:module "src"
     :serial t
     :components
     ((:file "slynk-backend")
@@ -64,7 +64,7 @@
      (:file "slynk-completion")))))
 
 (defsystem :slynk-util
-  :components ((:file "slynk/slynk-util")))
+  :components ((:file "src/slynk-util")))
 
 (defmethod perform :after ((o load-op) (c (eql (find-system :slynk))))
   (format *debug-io* "~&SLYNK's ASDF loader finished.")
@@ -81,37 +81,37 @@
 ;;;
 (defsystem :slynk-arglists
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-arglists")))
+  :components ((:file "src/contrib/slynk-arglists")))
 
 (defsystem :slynk-fancy-inspector
   :depends-on (:slynk :slynk-util)
-  :components ((:file "slynk/contrib/slynk-fancy-inspector")))
+  :components ((:file "src/contrib/slynk-fancy-inspector")))
 
 (defsystem :slynk-package-fu
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-package-fu")))
+  :components ((:file "src/contrib/slynk-package-fu")))
 
 (defsystem :slynk-mrepl
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-mrepl")))
+  :components ((:file "src/contrib/slynk-mrepl")))
 
 (defsystem :slynk-trace-dialog
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-trace-dialog")))
+  :components ((:file "src/contrib/slynk-trace-dialog")))
 
 (defsystem :slynk-profiler
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-profiler")))
+  :components ((:file "src/contrib/slynk-profiler")))
 
 (defsystem :slynk-stickers
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-stickers")))
+  :components ((:file "src/contrib/slynk-stickers")))
 
 (defsystem :slynk-indentation
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-indentation")))
+  :components ((:file "src/contrib/slynk-indentation")))
 
 (defsystem :slynk-retro
   :depends-on (:slynk)
-  :components ((:file "slynk/contrib/slynk-retro")))
+  :components ((:file "src/contrib/slynk-retro")))
 
