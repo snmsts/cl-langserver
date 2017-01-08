@@ -18,9 +18,9 @@
 ;; are disclaimed.
 
 (defsystem :slynk
-  :serial t
   :components
   ((:module "slynk"
+    :serial t
     :components
     ((:file "slynk-backend")
      ;; If/when we require ASDF3, we shall use :if-feature instead
@@ -64,7 +64,7 @@
      (:file "slynk-completion")))))
 
 (defsystem :slynk-util
-  :components ((:file "slynk-util")))
+  :components ((:file "slynk/slynk-util")))
 
 (defmethod perform :after ((o load-op) (c (eql (find-system :slynk))))
   (format *debug-io* "~&SLYNK's ASDF loader finished.")
