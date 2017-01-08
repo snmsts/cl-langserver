@@ -39,7 +39,7 @@
 (defun read-packet (stream)
   (let* ((length (parse-header stream))
          (octets (read-chunk stream length)))
-    (handler-case (slynk-backend:utf8-to-string octets)
+    (handler-case (ls-backend:utf8-to-string octets)
       (error (c) 
         (error 'slynk-reader-error 
                :packet (asciify octets)
@@ -148,7 +148,7 @@ to NIL in her ~/.swankrc. Generally best left alone.")
 
 (defun write-message (message package stream)
   (let* ((string (prin1-to-string-for-emacs message package))
-         (octets (handler-case (slynk-backend:string-to-utf8 string)
+         (octets (handler-case (ls-backend:string-to-utf8 string)
                    (error (c) (encoding-error c string))))
          (length (length octets)))
     (write-header stream length)
@@ -157,7 +157,7 @@ to NIL in her ~/.swankrc. Generally best left alone.")
 
 ;; FIXME: for now just tell emacs that we and an encoding problem.
 (defun encoding-error (condition string)
-  (slynk-backend:string-to-utf8
+  (ls-backend:string-to-utf8
    (prin1-to-string-for-emacs
     `(:reader-error
       ,(asciify string)

@@ -9,7 +9,7 @@
 ;;; Administrivia
 
 (defpackage slynk-clasp
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-clasp)
 
@@ -404,7 +404,7 @@
 ;;    (symbolp x)
 ;;    (member (symbol-package x)
 ;;            (list #.(find-package :slynk)
-;;                  #.(find-package :slynk-backend)
+;;                  #.(find-package ls-backend)
 ;;                  #.(ignore-errors (find-package :slynk-mop))
 ;;                  #.(ignore-errors (find-package :slynk-loader))))
 ;;    t))
@@ -428,7 +428,7 @@
 
 (defimplementation call-with-debugging-environment (debugger-loop-fn)
   (declare (type function debugger-loop-fn))
-  (let* ((*ihs-top* (or #+#.(slynk-backend:with-symbol '*stack-top-hint* 'core)
+  (let* ((*ihs-top* (or #+#.(ls-backend:with-symbol '*stack-top-hint* 'core)
                         core:*stack-top-hint*
                         (ihs-top)))
          (*ihs-current* *ihs-top*)
@@ -475,9 +475,9 @@
 
 (defimplementation print-frame (frame stream)
   (format stream "(~s~{ ~s~})" (function-name (first frame))
-          #+#.(slynk-backend:with-symbol 'ihs-arguments 'core)
+          #+#.(ls-backend:with-symbol 'ihs-arguments 'core)
           (coerce (core:ihs-arguments (third frame)) 'list)
-          #-#.(slynk-backend:with-symbol 'ihs-arguments 'core)
+          #-#.(ls-backend:with-symbol 'ihs-arguments 'core)
           nil))
 
 (defimplementation frame-source-location (frame-number)

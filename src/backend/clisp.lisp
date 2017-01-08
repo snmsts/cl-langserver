@@ -35,7 +35,7 @@
 ;;; [1] http://cvs.sourceforge.net/viewcvs.py/clocc/clocc/src/tools/metering/
 
 (defpackage slynk-clisp
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-clisp)
 

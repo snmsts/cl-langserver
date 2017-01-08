@@ -10,9 +10,9 @@
 ;;; separately for each Lisp. Each is declared as a generic function
 ;;; for which slynk-<implementation>.lisp provides methods.
 
-(defpackage slynk-backend
+(defpackage ls-backend
   (:use cl)
-  (:export *debug-slynk-backend*
+  (:export *debug-ls-backend*
            sly-db-condition
            compiler-condition
            original-condition
@@ -53,12 +53,12 @@
            boolean-to-feature-expression
            ;; package helper for backend
            import-to-slynk-mop
-           import-slynk-mop-symbols
+           import-ls-mop-symbols
 	   ;;
            definterface
            defimplementation))
 
-(defpackage slynk-mop
+(defpackage ls-mop
   (:use)
   (:export
    ;; classes
@@ -111,12 +111,12 @@
    compute-applicable-methods-using-classes
    finalize-inheritance))
 
-(in-package slynk-backend)
+(in-package ls-backend)
 
 
 ;;;; Metacode
 
-(defparameter *debug-slynk-backend* nil
+(defparameter *debug-ls-backend* nil
   "If this is true, backends should not catch errors but enter the
 debugger where appropriate. Also, they should not perform backtrace
 magic but really show every frame including SLYNK related ones.")
@@ -174,14 +174,14 @@ Backends implement these functions using DEFIMPLEMENTATION."
             `(pushnew ',name *unimplemented-interfaces*)
             (gen-default-impl))
        (eval-when (:compile-toplevel :load-toplevel :execute)
-         (import ',name :slynk-backend)
-         (export ',name :slynk-backend))
+         (import ',name :ls-backend)
+         (export ',name :ls-backend))
        ',name)))
 
 (defmacro defimplementation (name args &body body)
   (assert (every #'symbolp args) ()
           "Complex lambda-list not supported: ~S ~S" name args)
-  (let ((sym (find-symbol (symbol-name name) :slynk-backend)))
+  (let ((sym (find-symbol (symbol-name name) :ls-backend)))
     `(progn
        (setf (get ',sym 'implementation)
              ;; For implicit BLOCK. FLET because of interplay w/ decls.
@@ -207,16 +207,16 @@ The portable code calls this function at startup."
       (import sym :slynk-mop)
       (export sym :slynk-mop))))
 
-(defun import-slynk-mop-symbols (package except)
+(defun import-ls-mop-symbols (package except)
   "Import the mop symbols from PACKAGE to SLYNK-MOP.
 EXCEPT is a list of symbol names which should be ignored."
-  (do-symbols (s :slynk-mop)
+  (do-symbols (s :ls-mop)
     (unless (member s except :test #'string=)
       (let ((real-symbol (find-symbol (string s) package)))
         (assert real-symbol () "Symbol ~A not found in package ~A" s package)
-        (unintern s :slynk-mop)
-        (import real-symbol :slynk-mop)
-        (export real-symbol :slynk-mop)))))
+        (unintern s :ls-mop)
+        (import real-symbol :ls-mop)
+        (export real-symbol :ls-mop)))))
 
 (definterface gray-package-name ()
   "Return a package-name that contains the Gray stream symbols.
@@ -1094,7 +1094,7 @@ returns.")
     `(block ,gblock
        (handler-bind ((error
                        #'(lambda (e)
-                            (if *debug-slynk-backend*
+                            (if *debug-ls-backend*
                                 nil     ;decline
                                 (return-from ,gblock
                                   (make-error-location e))))))

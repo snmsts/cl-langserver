@@ -9,7 +9,7 @@
 ;;;
 
 (defpackage slynk-allegro
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-allegro)
 

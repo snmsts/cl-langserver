@@ -9,7 +9,7 @@
 ;;; Administrivia
 
 (defpackage slynk-mkcl
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-mkcl)
 
@@ -22,7 +22,7 @@
 
 (eval-when (:compile-toplevel :load-toplevel)
 
-  (slynk-backend::import-slynk-mop-symbols :clos
+  (ls-backend::import-slynk-mop-symbols :clos
     ;;  '(:eql-specializer
     ;;    :eql-specializer-object
     ;;    :generic-function-declarations
@@ -395,7 +395,7 @@
    (symbolp x)
    (member (symbol-package x)
            (list #.(find-package :slynk)
-                 #.(find-package :slynk-backend)
+                 #.(find-package :ls-backend)
                  #.(ignore-errors (find-package :slynk-mop))
                  #.(ignore-errors (find-package :slynk-loader))))
    t))

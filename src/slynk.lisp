@@ -11,7 +11,7 @@
 ;;; available to us here via the `SLYNK-BACKEND' package.
 
 (defpackage :slynk
-  (:use :cl :slynk-backend :slynk-match :slynk-rpc)
+  (:use :cl :ls-backend :slynk-match :slynk-rpc)
   (:export #:startup-multiprocessing
            #:start-server
            #:create-server
@@ -483,7 +483,7 @@ corresponding values in the CDR of VALUE."
   (with-slots (thread) ch
     (when (use-threads-p)
       (setf thread (spawn-channel-thread *emacs-connection* ch)))
-    (slynk-backend:send thread `(:serve-channel ,ch)))
+    (ls-backend:send thread `(:serve-channel ,ch)))
   (setf (channels) (nconc (channels) (list ch))))
 
 (defmethod print-object ((c channel) stream)
@@ -503,7 +503,7 @@ corresponding values in the CDR of VALUE."
   (channel-thread channel))
 
 (defun channel-thread-id (channel)
-  (slynk-backend:thread-id (channel-thread channel)))
+  (ls-backend:thread-id (channel-thread channel)))
 
 (defmethod close-channel (channel)
   (let ((probe (find-channel (channel-id channel))))
@@ -1106,11 +1106,11 @@ TIMEOUT has the same meaning as in WAIT-FOR-EVENT."
 The new thread will block waiting for a :SERVE-CHANNEL message, then
 process all requests in series until the :TEARDOWN message, at which
 point the thread terminates and CHANNEL is closed."
-  (slynk-backend:spawn
+  (ls-backend:spawn
    (lambda ()
      (with-connection (connection)
        (destructure-case
-        (slynk-backend:receive)
+        (ls-backend:receive)
         ((:serve-channel c)
          (assert (eq c channel))
          (loop
@@ -1670,12 +1670,12 @@ VERSION: the protocol version"
       :version ,*slynk-wire-protocol-version*)))
 
 (defun debug-on-slynk-error ()
-  (assert (eq *debug-on-slynk-protocol-error* *debug-slynk-backend*))
+  (assert (eq *debug-on-slynk-protocol-error* *debug-ls-backend*))
   *debug-on-slynk-protocol-error*)
 
 (defun (setf debug-on-slynk-error) (new-value)
   (setf *debug-on-slynk-protocol-error* new-value)
-  (setf *debug-slynk-backend* new-value))
+  (setf *debug-ls-backend* new-value))
 
 (defslyfun toggle-debug-on-slynk-error ()
   (setf (debug-on-slynk-error) (not (debug-on-slynk-error))))
@@ -3132,8 +3132,8 @@ MAKE-APROPOS-MATCHER interface has been implemented.")
                    (t
                     (string symbol)))))
          (interface-unimplemented-p
-           (find 'slynk-backend:make-apropos-matcher
-                 slynk-backend::*unimplemented-interfaces*))
+           (find 'ls-backend:make-apropos-matcher
+                 ls-backend::*unimplemented-interfaces*))
          (attempt-cl-ppcre (and *try-cl-ppcre-for-apropos*
                                 (not (every #'alpha-char-p pattern))))
          (cl-ppcre-matcher (and attempt-cl-ppcre
@@ -3157,7 +3157,7 @@ MAKE-APROPOS-MATCHER interface has been implemented.")
                                (background-message "Not a valid CL-PPCRE regexp, so using plain apropos")))
                          (make-plain-matcher pattern case-sensitive symbol-name-fn))
                         (t
-                         (slynk-backend:make-apropos-matcher pattern
+                         (ls-backend:make-apropos-matcher pattern
                                                              symbol-name-fn
                                                              case-sensitive)))))
     (with-package-iterator (next packages :external :internal)
@@ -3214,7 +3214,7 @@ MAKE-APROPOS-MATCHER interface has been implemented.")
                 (format string "Variable:~% ~a~2%" vdoc))
               (when fdoc
                 (format string "Function:~% Arglist: ~a~2% ~a"
-                        (slynk-backend:arglist sym)
+                        (ls-backend:arglist sym)
                         fdoc))))
           (format nil "No such symbol, ~a." symbol-name)))))
 
@@ -3919,9 +3919,9 @@ The server port is written to PORT-FILE-NAME."
   (let ((symbol (parse-symbol symbol-name *buffer-package*)))
     (ecase type
       (:subclasses
-       (mop-helper symbol #'slynk-mop:class-direct-subclasses))
+       (mop-helper symbol #'ls-mop:class-direct-subclasses))
       (:superclasses
-       (mop-helper symbol #'slynk-mop:class-direct-superclasses)))))
+       (mop-helper symbol #'ls-mop:class-direct-superclasses)))))
 
 
 ;;;; Automatically synchronized state

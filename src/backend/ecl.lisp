@@ -9,7 +9,7 @@
 ;;; Administrivia
 
 (defpackage slynk-ecl
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-ecl)
 
@@ -407,7 +407,7 @@
 ;;    (symbolp x)
 ;;    (member (symbol-package x)
 ;;            (list #.(find-package :slynk)
-;;                  #.(find-package :slynk-backend)
+;;                  #.(find-package :ls-backend)
 ;;                  #.(ignore-errors (find-package :slynk-mop))
 ;;                  #.(ignore-errors (find-package :slynk-loader))))
 ;;    t))

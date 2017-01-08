@@ -1,6 +1,6 @@
 (defpackage :slynk-stickers
   (:use :cl :slynk-api)
-  (:import-from :slynk-backend :slynk-compile-string)
+  (:import-from :ls-backend :slynk-compile-string)
   (:import-from :slynk :defslyfun :compile-string-for-emacs)
   (:export #:record
            #:compile-for-stickers

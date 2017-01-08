@@ -21,8 +21,8 @@
 ;;; are disclaimed.
 
 (defpackage slynk-source-file-cache
-  (:use cl slynk-backend)
-  (:import-from slynk-backend
+  (:use cl ls-backend)
+  (:import-from ls-backend
 		defimplementation buffer-first-change)
   (:export
    get-source-code

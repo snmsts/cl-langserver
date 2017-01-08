@@ -164,7 +164,7 @@ Returns two values: \(A B C\) and \(1 2 3\)."
   (and (not (char= (aref pattern 0) #\:))
        (collecting (collect-external collect-internal)
          (do-all-symbols (s)
-           (slynk-backend:when-let (symbol-package (symbol-package s))
+           (ls-backend:when-let (symbol-package (symbol-package s))
              (let* ((nicknames (package-nicknames symbol-package))
                     (sorted-nicknames (sort (cons (package-name symbol-package)
                                                   (copy-list nicknames))

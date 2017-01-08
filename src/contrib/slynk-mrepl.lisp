@@ -346,8 +346,8 @@ Set this to NIL to turn this feature off.")
     `(let ((,mrepl-sym (find-channel ,remote-id)))
        (assert ,mrepl-sym)
        (assert
-        (eq (slynk-backend:thread-id
-             (slynk-backend:current-thread))
+        (eq (ls-backend:thread-id
+             (ls-backend:current-thread))
             (channel-thread-id ,mrepl-sym))
         nil
         "This SLYFUN can only be called from threads belonging to MREPL")
@@ -426,7 +426,7 @@ list."
     (slynk:set-default-directory directory))
   (when package-name
     (guess-and-set-package package-name))
-  (values (package-name *package*) (slynk-backend:default-directory)))
+  (values (package-name *package*) (ls-backend:default-directory)))
 
 
 ;;;; Dedicated stream
@@ -446,13 +446,13 @@ Valid values are nil, t, :line.")
 (defun make-mrepl-output-stream (remote-id)
   (or (and *use-dedicated-output-stream*
            (open-dedicated-output-stream remote-id))
-      (slynk-backend:make-output-stream
+      (ls-backend:make-output-stream
        (make-thread-bindings-aware-lambda
         (lambda (string)
           (send-to-remote-channel remote-id `(:write-string ,string)))))))
 
 (defun make-mrepl-input-stream (repl)
-  (slynk-backend:make-input-stream
+  (ls-backend:make-input-stream
    (lambda () (read-input repl))))
 
 (defun open-dedicated-output-stream (remote-id)
@@ -462,21 +462,21 @@ Emacs's channel at REMOTE-ID is notified of a socket listening at an
 ephemeral port. Upon connection, the listening socket is closed, and
 the resulting connecion socket is used as optimized way for Lisp to
 deliver output to Emacs."
-  (let ((socket (slynk-backend:create-socket slynk::*loopback-interface*
+  (let ((socket (ls-backend:create-socket slynk::*loopback-interface*
                                              *dedicated-output-stream-port*))
         (ef (or (some #'slynk::find-external-format '("utf-8-unix" "utf-8"))
                 (error "no suitable coding system for dedicated stream"))))
     (unwind-protect
-         (let ((port (slynk-backend:local-port socket)))
+         (let ((port (ls-backend:local-port socket)))
            (send-to-remote-channel remote-id
                                    `(:open-dedicated-output-stream ,port nil))
-           (let ((dedicated (slynk-backend:accept-connection
+           (let ((dedicated (ls-backend:accept-connection
                              socket
                              :external-format ef
                              :buffering *dedicated-output-stream-buffering*
                              :timeout 30)))
              (slynk:authenticate-client dedicated)
-             (slynk-backend:close-socket socket)
+             (ls-backend:close-socket socket)
              (setf socket nil)
              ;; See github issue #21: Only sbcl and cmucl apparently
              ;; respect :LINE as a buffering type, hence this reader
@@ -492,13 +492,13 @@ deliver output to Emacs."
              ;;
              #-(or sbcl cmucl)
              (if (eq *dedicated-output-stream-buffering* :line)
-                 (slynk-backend:make-output-stream
+                 (ls-backend:make-output-stream
                   (lambda (string)
                     (write-sequence string dedicated)
                     (force-output dedicated)))
                  dedicated)))
       (when socket
-        (slynk-backend:close-socket socket)))))
+        (ls-backend:close-socket socket)))))
 
 
 ;;;; Globally redirect IO to Emacs

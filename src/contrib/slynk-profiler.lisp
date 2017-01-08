@@ -10,7 +10,7 @@
 
 (in-package :slynk-profiler)
 
-(defvar *timing-lock* (slynk-backend:make-lock :name "slynk-timings lock"))
+(defvar *timing-lock* (ls-backend:make-lock :name "slynk-timings lock"))
 
 (defvar *current-timing* nil)
 
@@ -118,13 +118,13 @@
                (when timing
                  (setf (end-of timing) (get-internal-real-time))
                  (setf *current-timing* (parent-of timing))))))
-      (slynk-backend:wrap spec 'timings
+      (ls-backend:wrap spec 'timings
                           :before #'before-hook
                           :after #'after-hook)
       (format nil "~a is now timed for timing dialog" spec))))
 
 (defslyfun untime-spec (spec)
-  (slynk-backend:unwrap spec 'timings)
+  (ls-backend:unwrap spec 'timings)
   (let ((moribund (find spec (timed-specs) :test #'equal :key #'spec-of)))
     (setf (timed-specs) (remove moribund (timed-specs)))
     (loop for otherts in (timed-specs)

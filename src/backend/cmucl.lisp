@@ -4,10 +4,10 @@
 ;;;
 ;;;; Introduction
 ;;;
-;;; This is the CMUCL implementation of the `slynk-backend' package.
+;;; This is the CMUCL implementation of the `ls-backend' package.
 
 (defpackage slynk-cmucl
-  (:use cl slynk-backend slynk-source-path-parser slynk-source-file-cache
+  (:use cl ls-backend slynk-source-path-parser slynk-source-file-cache
         fwrappers))
 
 (in-package slynk-cmucl)
@@ -2449,14 +2449,14 @@ int main (int argc, char** argv) {
       outfile)))
 
 ;; FIXME: lisp:unicode-complete introduced in version 20d.
-#+#.(slynk-backend:with-symbol 'unicode-complete 'lisp)
+#+#.(ls-backend:with-symbol 'unicode-complete 'lisp)
 (defun match-semi-standard (prefix matchp)
   ;; Handle the CMUCL's short character names.
   (loop for name in lisp::char-name-alist
      when (funcall matchp prefix (car name))
      collect (car name)))
 
-#+#.(slynk-backend:with-symbol 'unicode-complete 'lisp)
+#+#.(ls-backend:with-symbol 'unicode-complete 'lisp)
 (defimplementation character-completion-set (prefix matchp)
   (let ((names (lisp::unicode-complete prefix)))
     ;; Match prefix against semistandard names.  If there's a match,

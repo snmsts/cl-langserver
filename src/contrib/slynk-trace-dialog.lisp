@@ -54,7 +54,7 @@ program.")
 (defvar *traces* (make-array 1000 :fill-pointer 0
                                   :adjustable t))
 
-(defvar *trace-lock* (slynk-backend:make-lock :name "slynk-trace-dialog lock"))
+(defvar *trace-lock* (ls-backend:make-lock :name "slynk-trace-dialog lock"))
 
 (defvar *current-trace-by-thread* (make-hash-table))
 
@@ -78,7 +78,7 @@ program.")
   (declare (ignore initargs))
   (if (parent-of entry)
       (nconc (children-of (parent-of entry)) (list entry)))
-  (slynk-backend:call-with-lock-held
+  (ls-backend:call-with-lock-held
    *trace-lock*
    #'(lambda ()
        (setf (slot-value entry 'id) (fill-pointer *traces*))
@@ -94,17 +94,17 @@ program.")
   (values-list (args-of (trace-or-lose trace-id))))
 
 (defun useful-backtrace ()
-  (slynk-backend:call-with-debugging-environment
+  (ls-backend:call-with-debugging-environment
    #'(lambda ()
        (loop for i from 0
-             for frame in (slynk-backend:compute-backtrace 0 20)
+             for frame in (ls-backend:compute-backtrace 0 20)
              collect (list i (slynk::frame-to-string frame))))))
 
 (defun current-trace ()
-  (gethash (slynk-backend:current-thread) *current-trace-by-thread*))
+  (gethash (ls-backend:current-thread) *current-trace-by-thread*))
 
 (defun (setf current-trace) (trace)
-  (setf (gethash (slynk-backend:current-thread) *current-trace-by-thread*)
+  (setf (gethash (ls-backend:current-thread) *current-trace-by-thread*)
         trace))
 
 
@@ -178,7 +178,7 @@ program.")
   (setf *current-trace-by-thread* (clrhash *current-trace-by-thread*)
         *visitor-key* nil
         *unfinished-traces* nil)
-  (slynk-backend:call-with-lock-held
+  (ls-backend:call-with-lock-held
    *trace-lock*
    #'(lambda () (setf (fill-pointer *traces*) 0)))
   nil)
@@ -209,7 +209,7 @@ program.")
   (slynk::inspect-object (trace-or-lose trace-id)))
 
 (defslyfun trace-location (trace-id)
-  (slynk-backend:find-source-location (function-of (trace-or-lose trace-id))))
+  (ls-backend:find-source-location (function-of (trace-or-lose trace-id))))
 
 (defslyfun dialog-trace (spec)
   (let ((function nil))
@@ -233,7 +233,7 @@ program.")
         (warn "~a is apparently already traced! Untracing and retracing." spec)
         (dialog-untrace spec))
       (setq function
-            (slynk-backend:wrap spec 'trace-dialog
+            (ls-backend:wrap spec 'trace-dialog
                                 :before #'before-hook
                                 :after #'after-hook))
       (pushnew spec *traced-specs*)
@@ -241,7 +241,7 @@ program.")
 
 (defslyfun dialog-untrace (spec)
   (with-simple-restart (continue "Never mind, i really want this trace to go away")
-    (slynk-backend:unwrap spec 'trace-dialog))
+    (ls-backend:unwrap spec 'trace-dialog))
   (setq *traced-specs* (remove spec *traced-specs* :test #'equal))
   (format nil "~a is now untraced for trace dialog" spec))
 

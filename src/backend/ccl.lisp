@@ -14,7 +14,7 @@
 ;;; http://opensource.franz.com/preamble.html
 
 (defpackage slynk-ccl
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-ccl)
 
@@ -161,7 +161,7 @@
 ;;; Compilation
 
 (defun handle-compiler-warning (condition)
-  "Resignal a ccl:compiler-warning as slynk-backend:compiler-warning."
+  "Resignal a ccl:compiler-warning as ls-backend:compiler-warning."
   (signal 'compiler-condition
           :original-condition condition
           :message (compiler-warning-short-message condition)

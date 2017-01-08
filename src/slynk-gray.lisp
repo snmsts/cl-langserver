@@ -8,7 +8,7 @@
 ;;; are disclaimed.
 ;;;
 
-(in-package slynk-backend)
+(in-package ls-backend)
 
 #.(progn
     (defvar *gray-stream-symbols*
@@ -31,7 +31,7 @@
     nil)
 
 (defpackage slynk-gray
-  (:use cl slynk-backend)
+  (:use cl ls-backend)
   (:import-from #.(gray-package-name) . #.*gray-stream-symbols*)
   (:export . #.*gray-stream-symbols*))
 

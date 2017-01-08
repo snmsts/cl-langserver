@@ -232,7 +232,7 @@ If LOAD is true, load the fasl file."
           (mapcar #'ensure-list files)))
 
 (defvar *slynk-files*
-  `(slynk-backend ,@*sysdep-files* #-armedbear slynk-gray slynk-match slynk-rpc slynk slynk-completion))
+  `(ls-backend ,@*sysdep-files* #-armedbear slynk-gray slynk-match slynk-rpc slynk slynk-completion))
 
 (defun load-slynk (&key (src-dir *source-directory*)
                      (fasl-dir *fasl-directory*)
@@ -288,7 +288,7 @@ global variabes in SLYNK."
        "LOAD-CONTRIBS arg to SLYNK-LOADER:INIT is deprecated and useless"))
   (when (and delete (find-package :slynk))
     (delete-packages (list-slynk-packages))
-    (mapc #'delete-package '(:slynk :slynk-io-package :slynk-backend)))
+    (mapc #'delete-package '(:slynk :slynk-io-package :ls-backend)))
   (cond ((or (not (find-package :slynk)) reload)
          (load-slynk :quiet quiet))
         (t
@@ -298,7 +298,7 @@ global variabes in SLYNK."
 
 (defun dump-image (filename)
   (init :setup nil)
-  (funcall (q "slynk-backend:save-image") filename))
+  (funcall (q "ls-backend:save-image") filename))
 
 
 ;;;;;; Simple *require-module* function for asdf-loader.lisp.

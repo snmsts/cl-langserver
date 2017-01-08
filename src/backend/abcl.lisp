@@ -9,7 +9,7 @@
 ;;;
 
 (defpackage slynk-abcl
-  (:use cl slynk-backend))
+  (:use cl ls-backend))
 
 (in-package slynk-abcl)
 
@@ -37,7 +37,7 @@
 (defimplementation call-with-compilation-hooks (function)
   (funcall function))
 
-;;; slynk-mop
+;;; ls-mop
 
 ;;dummies and definition
 
@@ -90,7 +90,7 @@
    standard-slot-definition ;;dummy
    cl:method
    cl:standard-class
-   #+#.(slynk-backend:with-symbol 'compute-applicable-methods-using-classes 
+   #+#.(ls-backend:with-symbol 'compute-applicable-methods-using-classes 
          'mop)
    mop:compute-applicable-methods-using-classes
    ;; standard-class readers
@@ -815,6 +815,6 @@ part of *sysdep-pathnames* in slynk.loader.lisp.
 (defimplementation quit-lisp ()
   (ext:exit))
 ;;;
-#+#.(slynk-backend:with-symbol 'package-local-nicknames 'ext)
+#+#.(ls-backend:with-symbol 'package-local-nicknames 'ext)
 (defimplementation package-local-nicknames (package)
   (ext:package-local-nicknames package))

@@ -64,7 +64,7 @@
 ;;; * More sophisticated communication styles than NIL
 ;;;
 
-(in-package :slynk-backend)
+(in-package :ls-backend)
 
 ;;; Pull in various needed bits
 (require :composite-streams)

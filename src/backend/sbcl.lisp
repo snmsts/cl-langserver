@@ -11,12 +11,12 @@
 
 ;;; Administrivia
 
-(defpackage slynk-sbcl
-  (:use cl slynk-backend slynk-source-path-parser slynk-source-file-cache)
+(defpackage ls-sbcl
+  (:use cl ls-backend slynk-source-path-parser slynk-source-file-cache)
   (:export
    #:with-sbcl-version>=))
 
-(in-package slynk-sbcl)
+(in-package ls-sbcl)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require 'sb-bsd-sockets)
@@ -54,11 +54,11 @@
             (fboundp sym)
             (funcall sym :setf :inverse ()))))))
 
-;;; slynk-mop
+;;; ls-mop
 
-(import-slynk-mop-symbols :sb-mop '(:slot-definition-documentation))
+(import-ls-mop-symbols :sb-mop '(:slot-definition-documentation))
 
-(defun slynk-mop:slot-definition-documentation (slot)
+(defun ls-mop:slot-definition-documentation (slot)
   (sb-pcl::documentation slot t))
 
 ;; stream support
@@ -230,7 +230,7 @@
 #-win32
 (defun input-ready-p (stream)
   (or (not (fd-stream-input-buffer-empty-p stream))
-      #+#.(slynk-backend:with-symbol 'fd-stream-fd-type 'sb-impl)
+      #+#.(ls-backend:with-symbol 'fd-stream-fd-type 'sb-impl)
       (eq :regular (sb-impl::fd-stream-fd-type stream))
       (not (sb-impl::sysread-may-block-p stream))))
 
@@ -434,7 +434,7 @@
 
 ;;; Packages
 
-#+#.(slynk-backend:with-symbol 'package-local-nicknames 'sb-ext)
+#+#.(ls-backend:with-symbol 'package-local-nicknames 'sb-ext)
 (defimplementation package-local-nicknames (package)
   (sb-ext:package-local-nicknames package))
 
@@ -450,20 +450,20 @@
           (error "~S does not exist in SLYNK." name)))))
 
 (defun sbcl-version>= (&rest subversions)
-  #+#.(slynk-backend:with-symbol 'assert-version->= 'sb-ext)
+  #+#.(ls-backend:with-symbol 'assert-version->= 'sb-ext)
   (values (ignore-errors (apply #'sb-ext:assert-version->= subversions) t))
-  #-#.(slynk-backend:with-symbol 'assert-version->= 'sb-ext)
+  #-#.(ls-backend:with-symbol 'assert-version->= 'sb-ext)
   nil)
 
 (defmacro with-sbcl-version>= (&rest subversions)
   `(if (sbcl-version>= ,@subversions)
        '(:and) '(:or)))
 
-#+#.(slynk-backend:with-symbol 'function-lambda-list 'sb-introspect)
+#+#.(ls-backend:with-symbol 'function-lambda-list 'sb-introspect)
 (defimplementation arglist (fname)
   (sb-introspect:function-lambda-list fname))
 
-#-#.(slynk-backend:with-symbol 'function-lambda-list 'sb-introspect)
+#-#.(ls-backend:with-symbol 'function-lambda-list 'sb-introspect)
 (defimplementation arglist (fname)
   (sb-introspect:function-arglist fname))
 
@@ -485,7 +485,7 @@
                     flags :key #'ensure-list))
           (call-next-method)))))
 
-#+#.(slynk-backend:with-symbol 'deftype-lambda-list 'sb-introspect)
+#+#.(ls-backend:with-symbol 'deftype-lambda-list 'sb-introspect)
 (defmethod type-specifier-arglist :around (typespec-operator)
   (multiple-value-bind (arglist foundp)
       (sb-introspect:deftype-lambda-list typespec-operator)
@@ -526,7 +526,7 @@ information."
                       (sb-c:compiler-error  :error)
                       (reader-error         :read-error)
                       (error                :error)
-                      #+#.(slynk-backend:with-symbol redefinition-warning 
+                      #+#.(ls-backend:with-symbol redefinition-warning 
                             sb-kernel)
                       (sb-kernel:redefinition-warning
                        :redefinition)
@@ -671,7 +671,7 @@ compiler state."
 (defun compiler-policy (qualities)
   "Return compiler policy qualities present in the QUALITIES alist.
 QUALITIES is an alist with (quality . value)"
-  #+#.(slynk-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
+  #+#.(ls-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
   (loop with policy = (sb-ext:restrict-compiler-policy)
         for (quality) in qualities
         collect (cons quality
@@ -680,7 +680,7 @@ QUALITIES is an alist with (quality . value)"
 
 (defun (setf compiler-policy) (policy)
   (declare (ignorable policy))
-  #+#.(slynk-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
+  #+#.(ls-backend:with-symbol 'restrict-compiler-policy 'sb-ext)
   (loop for (qual . value) in policy
         do (sb-ext:restrict-compiler-policy qual value)))
 
@@ -867,7 +867,7 @@ QUALITIES is an alist with (quality . value)"
             (pathname :file-without-position)
             (t :invalid)))))
 
-#+#.(slynk-backend:with-symbol 'definition-source-form-number 'sb-introspect)
+#+#.(ls-backend:with-symbol 'definition-source-form-number 'sb-introspect)
 (defun form-number-position (definition-source stream)
   (let* ((tlf-number (car (sb-introspect:definition-source-form-path definition-source)))
          (form-number (sb-introspect:definition-source-form-number definition-source)))
@@ -880,7 +880,7 @@ QUALITIES is an alist with (quality . value)"
                           (reverse (cdr (aref path-table form-number)))))))
         (source-path-source-position path tlf pos-map)))))
 
-#+#.(slynk-backend:with-symbol 'definition-source-form-number 'sb-introspect)
+#+#.(ls-backend:with-symbol 'definition-source-form-number 'sb-introspect)
 (defun file-form-number-position (definition-source)
   (let* ((code-date (sb-introspect:definition-source-file-write-date definition-source))
          (filename (sb-introspect:definition-source-pathname definition-source))
@@ -890,7 +890,7 @@ QUALITIES is an alist with (quality . value)"
       (with-input-from-string (s source-code)
         (form-number-position definition-source s)))))
 
-#+#.(slynk-backend:with-symbol 'definition-source-form-number 'sb-introspect)
+#+#.(ls-backend:with-symbol 'definition-source-form-number 'sb-introspect)
 (defun string-form-number-position (definition-source string)
   (with-input-from-string (s string)
     (form-number-position definition-source s)))
@@ -907,7 +907,7 @@ QUALITIES is an alist with (quality . value)"
           (or
            (and form-path
                 (or
-                 #+#.(slynk-backend:with-symbol 'definition-source-form-number 'sb-introspect)
+                 #+#.(ls-backend:with-symbol 'definition-source-form-number 'sb-introspect)
                  (setf (values start end)
                        (and (sb-introspect:definition-source-form-number definition-source)
                             (string-form-number-position definition-source emacs-string)))
@@ -929,7 +929,7 @@ QUALITIES is an alist with (quality . value)"
     (let* ((namestring (namestring (translate-logical-pathname pathname)))
            (pos (or (and form-path
                          (or
-                          #+#.(slynk-backend:with-symbol 'definition-source-form-number 'sb-introspect)
+                          #+#.(ls-backend:with-symbol 'definition-source-form-number 'sb-introspect)
                           (and (sb-introspect:definition-source-form-number definition-source)
                                (ignore-errors (file-form-number-position definition-source)))
                           (ignore-errors
@@ -992,7 +992,7 @@ QUALITIES is an alist with (quality . value)"
 
 (defun setf-expander (symbol)
   (or
-   #+#.(slynk-sbcl::sbcl-with-setf-inverse-meta-info)
+   #+#.(ls-sbcl::sbcl-with-setf-inverse-meta-info)
    (sb-int:info :setf :inverse symbol)
    (sb-int:info :setf :expander symbol)))
 
@@ -1040,7 +1040,7 @@ Return NIL if the symbol is unbound."
     (:type
      (describe (sb-kernel:values-specifier-type symbol)))))
   
-#+#.(slynk-sbcl::sbcl-with-xref-p)
+#+#.(ls-sbcl::sbcl-with-xref-p)
 (progn
   (defmacro defxref (name &optional fn-name)
     `(defimplementation ,name (what)
@@ -1056,7 +1056,7 @@ Return NIL if the symbol is unbound."
   (defxref who-sets)
   (defxref who-references)
   (defxref who-macroexpands)
-  #+#.(slynk-backend:with-symbol 'who-specializes-directly 'sb-introspect)
+  #+#.(ls-backend:with-symbol 'who-specializes-directly 'sb-introspect)
   (defxref who-specializes who-specializes-directly))
 
 (defun source-location-for-xref-data (xref-data)
@@ -1094,9 +1094,9 @@ Return NIL if the symbol is unbound."
                 (equal (second a) (second b))))))
 
 (defun ignored-xref-function-names ()
-  #-#.(slynk-sbcl::sbcl-with-new-stepper-p)
+  #-#.(ls-sbcl::sbcl-with-new-stepper-p)
   '(nil sb-c::step-form sb-c::step-values)
-  #+#.(slynk-sbcl::sbcl-with-new-stepper-p)
+  #+#.(ls-sbcl::sbcl-with-new-stepper-p)
   '(nil))
 
 (defun function-dspec (fn)
@@ -1140,7 +1140,7 @@ Return a list of the form (NAME LOCATION)."
   (set-break-hook function))
 
 (defimplementation condition-extras (condition)
-  (cond #+#.(slynk-sbcl::sbcl-with-new-stepper-p)
+  (cond #+#.(ls-sbcl::sbcl-with-new-stepper-p)
         ((typep condition 'sb-impl::step-form-condition)
          `((:show-frame-source 0)))
         ((typep condition 'sb-int:reference-condition)
@@ -1164,11 +1164,11 @@ Return a list of the form (NAME LOCATION)."
 (defimplementation call-with-debugging-environment (debugger-loop-fn)
   (declare (type function debugger-loop-fn))
   (let ((*sly-db-stack-top*
-          (if (and (not *debug-slynk-backend*)
+          (if (and (not *debug-ls-backend*)
                    sb-debug:*stack-top-hint*)
-              #+#.(slynk-backend:with-symbol 'resolve-stack-top-hint 'sb-debug)
+              #+#.(ls-backend:with-symbol 'resolve-stack-top-hint 'sb-debug)
               (sb-debug::resolve-stack-top-hint)
-              #-#.(slynk-backend:with-symbol 'resolve-stack-top-hint 'sb-debug)
+              #-#.(ls-backend:with-symbol 'resolve-stack-top-hint 'sb-debug)
               sb-debug:*stack-top-hint*
               (sb-di:top-frame)))
         (sb-debug:*stack-top-hint* nil))
@@ -1178,7 +1178,7 @@ Return a list of the form (NAME LOCATION)."
                                :original-condition condition))))
       (funcall debugger-loop-fn))))
 
-#+#.(slynk-sbcl::sbcl-with-new-stepper-p)
+#+#.(ls-sbcl::sbcl-with-new-stepper-p)
 (progn
   (defimplementation activate-stepping (frame)
     (declare (ignore frame))
@@ -1194,14 +1194,14 @@ Return a list of the form (NAME LOCATION)."
 
 (defimplementation call-with-debugger-hook (hook fun)
   (let ((*debugger-hook* hook)
-        #+#.(slynk-sbcl::sbcl-with-new-stepper-p)
+        #+#.(ls-sbcl::sbcl-with-new-stepper-p)
         (sb-ext:*stepper-hook*
          (lambda (condition)
            (typecase condition
              (sb-ext:step-form-condition
               (let ((sb-debug:*stack-top-hint* (sb-di::find-stepped-frame)))
                 (sb-impl::invoke-debugger condition)))))))
-    (handler-bind (#+#.(slynk-sbcl::sbcl-with-new-stepper-p)
+    (handler-bind (#+#.(ls-sbcl::sbcl-with-new-stepper-p)
                    (sb-ext:step-condition #'sb-impl::invoke-stepper))
       (call-with-break-hook hook fun))))
 
@@ -1223,7 +1223,7 @@ stack."
   (sb-debug::print-frame-call frame stream))
 
 (defimplementation frame-restartable-p (frame)
-  #+#.(slynk-sbcl::sbcl-with-restart-frame)
+  #+#.(ls-sbcl::sbcl-with-restart-frame)
   (not (null (sb-debug:frame-has-debug-tag-p frame))))
 
 (defimplementation frame-arguments (frame)
@@ -1245,11 +1245,11 @@ stack."
          (plist (sb-c::debug-source-plist dsource)))
     (if (getf plist :emacs-buffer)
         (emacs-buffer-source-location code-location plist)
-        #+#.(slynk-backend:with-symbol 'debug-source-from 'sb-di)
+        #+#.(ls-backend:with-symbol 'debug-source-from 'sb-di)
         (ecase (sb-di:debug-source-from dsource)
           (:file (file-source-location code-location))
           (:lisp (lisp-source-location code-location)))
-        #-#.(slynk-backend:with-symbol 'debug-source-from 'sb-di)
+        #-#.(ls-backend:with-symbol 'debug-source-from 'sb-di)
         (if (sb-di:debug-source-namestring dsource)
             (file-source-location code-location)
             (lisp-source-location code-location)))))
@@ -1313,10 +1313,10 @@ stack."
                          `(:snippet ,snippet)))))))
 
 (defun code-location-debug-source-name (code-location)
-  (namestring (truename (#+#.(slynk-backend:with-symbol
+  (namestring (truename (#+#.(ls-backend:with-symbol
                               'debug-source-name 'sb-di)
                              sb-c::debug-source-name
-                             #-#.(slynk-backend:with-symbol
+                             #-#.(ls-backend:with-symbol
                                   'debug-source-name 'sb-di)
                              sb-c::debug-source-namestring
                          (sb-di::code-location-debug-source code-location)))))
@@ -1458,7 +1458,7 @@ stack."
           (symbol (symbol-package name))
           ((cons (eql setf) (cons symbol)) (symbol-package (cadr name))))))))
 
-#+#.(slynk-sbcl::sbcl-with-restart-frame)
+#+#.(ls-sbcl::sbcl-with-restart-frame)
 (progn
   (defimplementation return-from-frame (index form)
     (let* ((frame (nth-frame index)))
@@ -1490,7 +1490,7 @@ stack."
 ;; FIXME: this implementation doesn't unwind the stack before
 ;; re-invoking the function, but it's better than no implementation at
 ;; all.
-#-#.(slynk-sbcl::sbcl-with-restart-frame)
+#-#.(ls-sbcl::sbcl-with-restart-frame)
 (progn
   (defun sb-debug-catch-tag-p (tag)
     (and (symbolp tag)
@@ -1624,7 +1624,7 @@ stack."
 ;;;; Multiprocessing
 
 #+(and sb-thread
-       #.(slynk-backend:with-symbol "THREAD-NAME" "SB-THREAD"))
+       #.(ls-backend:with-symbol "THREAD-NAME" "SB-THREAD"))
 (progn
   (defvar *thread-id-counter* 0)
 
@@ -1809,9 +1809,9 @@ stack."
   )
 
 (defimplementation quit-lisp ()
-  #+#.(slynk-backend:with-symbol 'exit 'sb-ext)
+  #+#.(ls-backend:with-symbol 'exit 'sb-ext)
   (sb-ext:exit)
-  #-#.(slynk-backend:with-symbol 'exit 'sb-ext)
+  #-#.(ls-backend:with-symbol 'exit 'sb-ext)
   (progn
     #+sb-thread
     (dolist (thread (remove (current-thread) (all-threads)))
@@ -1860,19 +1860,19 @@ stack."
 ;;; Weak datastructures
 
 (defimplementation make-weak-key-hash-table (&rest args)  
-  #+#.(slynk-sbcl::sbcl-with-weak-hash-tables)
+  #+#.(ls-sbcl::sbcl-with-weak-hash-tables)
   (apply #'make-hash-table :weakness :key args)
-  #-#.(slynk-sbcl::sbcl-with-weak-hash-tables)
+  #-#.(ls-sbcl::sbcl-with-weak-hash-tables)
   (apply #'make-hash-table args))
 
 (defimplementation make-weak-value-hash-table (&rest args)
-  #+#.(slynk-sbcl::sbcl-with-weak-hash-tables)
+  #+#.(ls-sbcl::sbcl-with-weak-hash-tables)
   (apply #'make-hash-table :weakness :value args)
-  #-#.(slynk-sbcl::sbcl-with-weak-hash-tables)
+  #-#.(ls-sbcl::sbcl-with-weak-hash-tables)
   (apply #'make-hash-table args))
 
 (defimplementation hash-table-weakness (hashtable)
-  #+#.(slynk-sbcl::sbcl-with-weak-hash-tables)
+  #+#.(ls-sbcl::sbcl-with-weak-hash-tables)
   (sb-ext:hash-table-weakness hashtable))
 
 #-win32
@@ -1915,10 +1915,10 @@ stack."
         (sb-alien:free-alien a-args))))
 
   (defun runtime-pathname ()
-    #+#.(slynk-backend:with-symbol
+    #+#.(ls-backend:with-symbol
             '*runtime-pathname* 'sb-ext)
     sb-ext:*runtime-pathname*
-    #-#.(slynk-backend:with-symbol
+    #-#.(ls-backend:with-symbol
             '*runtime-pathname* 'sb-ext)
     (car sb-ext:*posix-argv*))
 
@@ -1982,10 +1982,10 @@ stack."
           spec indicator)
     (sb-int:unencapsulate spec indicator))
   (sb-int:encapsulate spec indicator
-                      #-#.(slynk-backend:with-symbol 'arg-list 'sb-int)
+                      #-#.(ls-backend:with-symbol 'arg-list 'sb-int)
                       (lambda (function &rest args)
                         (sbcl-wrap spec before after replace function args))
-                      #+#.(slynk-backend:with-symbol 'arg-list 'sb-int)
+                      #+#.(ls-backend:with-symbol 'arg-list 'sb-int)
                       (if (sbcl-version>= 1 1 16)
                           (lambda ()
                             (sbcl-wrap spec before after replace
@@ -2018,7 +2018,7 @@ stack."
       (when after
         (funcall after (if completed retlist :exited-non-locally))))))
 
-#+#.(slynk-backend:with-symbol 'comma-expr 'sb-impl)
+#+#.(ls-backend:with-symbol 'comma-expr 'sb-impl)
 (progn
   (defmethod sexp-in-bounds-p ((s sb-impl::comma) i)
     (= i 1))
