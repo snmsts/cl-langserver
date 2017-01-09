@@ -23,7 +23,7 @@
 
 ;;; Taken from slynk-cmucl.lisp, by Helmut Eller
 
-(defpackage ls-source-path-parser
+(defpackage :ls-source-path-parser
   (:use cl)
   (:export
    read-source-form

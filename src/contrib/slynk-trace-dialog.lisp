@@ -1,4 +1,4 @@
-(defpackage :slynk-trace-dialog
+(defpackage :ls-trace-dialog
   (:use :cl :ls-api)
   (:export #:clear-trace-tree
            #:dialog-toggle-trace
@@ -27,7 +27,7 @@
            #:trace-arguments-or-lose
            #:trace-location))
 
-(in-package :slynk-trace-dialog)
+(in-package :ls-trace-dialog)
 
 (defparameter *record-backtrace* nil
   "Record a backtrace of the last 20 calls for each trace.
@@ -54,7 +54,7 @@ program.")
 (defvar *traces* (make-array 1000 :fill-pointer 0
                                   :adjustable t))
 
-(defvar *trace-lock* (ls-backend:make-lock :name "slynk-trace-dialog lock"))
+(defvar *trace-lock* (ls-backend:make-lock :name "ls-trace-dialog lock"))
 
 (defvar *current-trace-by-thread* (make-hash-table))
 
@@ -98,7 +98,7 @@ program.")
    #'(lambda ()
        (loop for i from 0
              for frame in (ls-backend:compute-backtrace 0 20)
-             collect (list i (slynk::frame-to-string frame))))))
+             collect (list i (ls-base::frame-to-string frame))))))
 
 (defun current-trace ()
   (gethash (ls-backend:current-thread) *current-trace-by-thread*))
@@ -117,7 +117,7 @@ program.")
     ,(loop for arg in (args-of trace)
            for i from 0
            collect (list i (present-for-emacs arg #'slynk-pprint-to-line)))
-    ,(loop for retval in (slynk::ensure-list (retlist-of trace))
+    ,(loop for retval in (ls-base::ensure-list (retlist-of trace))
            for i from 0
            collect (list i (present-for-emacs retval #'slynk-pprint-to-line)))))
 
@@ -187,7 +187,7 @@ program.")
   (let* ((trace (trace-or-lose id))
          (l (ecase type
               (:arg (args-of trace))
-              (:retval (slynk::ensure-list (retlist-of trace))))))
+              (:retval (ls-base::ensure-list (retlist-of trace))))))
     (or (nth part-id l)
         (error "Cannot find a trace part with id ~a and part-id ~a"
                id part-id))))
@@ -196,17 +196,17 @@ program.")
   (values-list (args-of (trace-or-lose trace-id))))
 
 (defslyfun inspect-trace-part (trace-id part-id type)
-  (slynk::inspect-object
+  (ls-base::inspect-object
    (trace-part-or-lose trace-id part-id type)))
 
 (defslyfun pprint-trace-part (trace-id part-id type)
-  (slynk::slynk-pprint (list (trace-part-or-lose trace-id part-id type))))
+  (ls-base::slynk-pprint (list (trace-part-or-lose trace-id part-id type))))
 
 (defslyfun describe-trace-part (trace-id part-id type)
-  (slynk::describe-to-string (trace-part-or-lose trace-id part-id type)))
+  (ls-base::describe-to-string (trace-part-or-lose trace-id part-id type)))
 
 (defslyfun inspect-trace (trace-id)
-  (slynk::inspect-object (trace-or-lose trace-id)))
+  (ls-base::inspect-object (trace-or-lose trace-id)))
 
 (defslyfun trace-location (trace-id)
   (ls-backend:find-source-location (function-of (trace-or-lose trace-id))))
@@ -265,7 +265,7 @@ program.")
 
 ;;;; Hook onto emacs
 ;;;; 
-(setq slynk:*after-toggle-trace-hook*
+(setq ls-base:*after-toggle-trace-hook*
       #'(lambda (spec traced-p)
           (when *dialog-trace-follows-trace*
             (cond (traced-p
@@ -275,12 +275,12 @@ program.")
                    (dialog-untrace spec)
                    "untraced for the trace dialog as well")))))
 
-;; HACK: `slynk::*inspector-history*' is unbound by default and needs
-;; a reset in that case so that it won't error `slynk::inspect-object'
+;; HACK: `ls-base::*inspector-history*' is unbound by default and needs
+;; a reset in that case so that it won't error `ls-base::inspect-object'
 ;; before any other object is inspected in the sly session.
 ;;
-(unless (boundp 'slynk::*inspector-history*)
-  (slynk::reset-inspector))
+(unless (boundp 'ls-base::*inspector-history*)
+  (ls-base::reset-inspector))
 
 
 ;;;; Instrumentation
@@ -291,4 +291,4 @@ program.")
        (trace-format (format nil "~a: ~a" ',id "~a => ~{~a~^, ~}") ',x ,values-sym)
        (values-list ,values-sym))))
 
-(provide :slynk-trace-dialog)
+(provide :ls-trace-dialog)

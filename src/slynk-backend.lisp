@@ -10,7 +10,7 @@
 ;;; separately for each Lisp. Each is declared as a generic function
 ;;; for which slynk-<implementation>.lisp provides methods.
 
-(defpackage ls-backend
+(defpackage :ls-backend
   (:use cl)
   (:export *debug-ls-backend*
            sly-db-condition
@@ -58,7 +58,7 @@
            definterface
            defimplementation))
 
-(defpackage ls-mop
+(defpackage :ls-mop
   (:use)
   (:export
    ;; classes

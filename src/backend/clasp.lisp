@@ -8,7 +8,7 @@
 
 ;;; Administrivia
 
-(defpackage slynk-clasp
+(defpackage :slynk-clasp
   (:use cl ls-backend))
 
 (in-package slynk-clasp)

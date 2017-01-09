@@ -11,7 +11,7 @@
 
 ;;; Administrivia
 
-(defpackage ls-sbcl
+(defpackage :ls-sbcl
   (:use cl ls-backend ls-source-path-parser ls-source-file-cache)
   (:export
    #:with-sbcl-version>=))

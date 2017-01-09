@@ -7,7 +7,7 @@
 ;; License: Public Domain
 ;;
 
-(in-package :slynk)
+(in-package :ls-base)
 
 ;;;; Utilities
 
@@ -646,7 +646,7 @@ As a secondary value, return whether &allow-other-keys appears somewhere."
     (dolist (method methods)
       (multiple-value-bind (kw aok)
 	  (arglist-keywords
-	   (slynk-mop:method-lambda-list method))
+	   (ls-mop:method-lambda-list method))
 	(setq keywords (remove-duplicates (append keywords kw)
                                           :key #'keyword-arg.keyword)
 	      allow-other-keys (or allow-other-keys aok))))
@@ -656,7 +656,7 @@ As a secondary value, return whether &allow-other-keys appears somewhere."
   "Collect all keywords in the methods of GENERIC-FUNCTION.
 As a secondary value, return whether &allow-other-keys appears somewhere."
   (methods-keywords
-   (slynk-mop:generic-function-methods generic-function)))
+   (ls-mop:generic-function-methods generic-function)))
 
 (defun applicable-methods-keywords (generic-function arguments)
   "Collect all keywords in the methods of GENERIC-FUNCTION that are
@@ -664,7 +664,7 @@ applicable for argument of CLASSES.  As a secondary value, return
 whether &allow-other-keys appears somewhere."
   (methods-keywords
    (multiple-value-bind (amuc okp)
-       (slynk-mop:compute-applicable-methods-using-classes
+       (ls-mop:compute-applicable-methods-using-classes
         generic-function (mapcar #'class-of arguments))
      (if okp
          amuc
@@ -746,26 +746,26 @@ forward keywords to OPERATOR."
     (let* ((class-name (cadr class-name-form))
            (class (find-class class-name nil)))
       (when (and class
-                 (not (slynk-mop:class-finalized-p class)))
+                 (not (ls-mop:class-finalized-p class)))
         ;; Try to finalize the class, which can fail if
         ;; superclasses are not defined yet
-        (ignore-errors (slynk-mop:finalize-inheritance class)))
+        (ignore-errors (ls-mop:finalize-inheritance class)))
       class)))
 
 (defun extra-keywords/slots (class)
   (multiple-value-bind (slots allow-other-keys-p)
-      (if (slynk-mop:class-finalized-p class)
-          (values (slynk-mop:class-slots class) nil)
-          (values (slynk-mop:class-direct-slots class) t))
+      (if (ls-mop:class-finalized-p class)
+          (values (ls-mop:class-slots class) nil)
+          (values (ls-mop:class-direct-slots class) t))
     (let ((slot-init-keywords
             (loop for slot in slots append
                   (mapcar (lambda (initarg)
                             (make-keyword-arg
                              initarg
-                             (slynk-mop:slot-definition-name slot)
-                             (and (slynk-mop:slot-definition-initfunction slot)
-                                  (slynk-mop:slot-definition-initform slot))))
-                          (slynk-mop:slot-definition-initargs slot)))))
+                             (ls-mop:slot-definition-name slot)
+                             (and (ls-mop:slot-definition-initfunction slot)
+                                  (ls-mop:slot-definition-initform slot))))
+                          (ls-mop:slot-definition-initargs slot)))))
       (values slot-init-keywords allow-other-keys-p))))
 
 (defun extra-keywords/make-instance (operator &rest args)
@@ -783,12 +783,12 @@ forward keywords to OPERATOR."
                 (ignore-errors
                  (applicable-methods-keywords
                   #'initialize-instance
-                  (list (slynk-mop:class-prototype class))))
+                  (list (ls-mop:class-prototype class))))
               (multiple-value-bind (shared-initialize-keywords si-aokp)
                   (ignore-errors
                    (applicable-methods-keywords
                     #'shared-initialize
-                    (list (slynk-mop:class-prototype class) t)))
+                    (list (ls-mop:class-prototype class) t)))
                 (values (append slot-init-keywords
                                 allocate-instance-keywords
                                 initialize-instance-keywords
@@ -809,7 +809,7 @@ forward keywords to OPERATOR."
               (ignore-errors
                 (applicable-methods-keywords
                  #'shared-initialize
-                 (list (slynk-mop:class-prototype class) t)))
+                 (list (ls-mop:class-prototype class) t)))
             ;; FIXME: much as it would be nice to include the
             ;; applicable keywords from
             ;; UPDATE-INSTANCE-FOR-DIFFERENT-CLASS, I don't really see
@@ -1555,7 +1555,7 @@ datum for subsequent logics to rely on."
 
 (defun test-print-arglist ()
   (flet ((test (arglist &rest strings)
-           (let* ((*package* (find-package :slynk))
+           (let* ((*package* (find-package :ls-base))
                   (actual (decoded-arglist-to-string
                            (decode-arglist arglist)
                            :print-right-margin 1000)))
@@ -1599,4 +1599,4 @@ datum for subsequent logics to rely on."
 (test-print-arglist)
 (test-arglist-ref)
 
-(provide :slynk-arglists)
+(provide :ls-arglists)

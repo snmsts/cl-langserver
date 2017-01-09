@@ -8,7 +8,7 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage slynk-abcl
+(defpackage :slynk-abcl
   (:use cl ls-backend))
 
 (in-package slynk-abcl)

@@ -1,4 +1,4 @@
-(in-package :slynk)
+(in-package :ls-base)
 
 (defvar *application-hints-tables* '()
   "A list of hash tables mapping symbols to indentation hints (lists 
@@ -137,4 +137,4 @@ in Emacs."
   (assert (equal nil
                  (macro-indentation '(x y &key z)))))
 
-(provide :slynk-indentation)
+(provide :ls-indentation)

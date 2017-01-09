@@ -13,7 +13,7 @@
 ;;; The LLGPL is also available online at
 ;;; http://opensource.franz.com/preamble.html
 
-(defpackage slynk-ccl
+(defpackage :slynk-ccl
   (:use cl ls-backend))
 
 (in-package slynk-ccl)

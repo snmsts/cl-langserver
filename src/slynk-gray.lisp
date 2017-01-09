@@ -30,7 +30,7 @@
       stream-read-char-no-hang))
     nil)
 
-(defpackage ls-gray
+(defpackage :ls-gray
   (:use cl ls-backend)
   (:import-from #.(gray-package-name) . #.*gray-stream-symbols*)
   (:export . #.*gray-stream-symbols*))

@@ -1,6 +1,6 @@
-(defpackage :slynk-profiler
+(defpackage :ls-profiler
   (:use :cl)
-  (:import-from :slynk :defslyfun :from-string :to-string)
+  (:import-from :ls-base :defslyfun :from-string :to-string)
   (:export #:toggle-timing
            #:untime-spec
            #:clear-timing-tree
@@ -8,7 +8,7 @@
            #:timed-spec-p
            #:time-spec))
 
-(in-package :slynk-profiler)
+(in-package :ls-profiler)
 
 (defvar *timing-lock* (ls-backend:make-lock :name "slynk-timings lock"))
 
@@ -154,8 +154,8 @@
   (loop for spec in (timed-specs)
         append (loop for partial being the hash-values of (stats-of spec)
                      for path being the hash-keys of (stats-of spec)
-                     collect (list (slynk:to-line spec) partial
-                                   (slynk:to-line path)))))
+                     collect (list (ls-base::slynk-pprint-to-line spec) partial
+                                   (ls-base::slynk-pprint-to-line path)))))
 
 (defun print-tree ()
   (loop for ts in (timed-specs)
@@ -186,4 +186,4 @@
   (loop for ts in (timed-specs)
         do (reinitialize-instance ts)))
 
-(provide :slynk-profiler)
+(provide :ls-profiler)

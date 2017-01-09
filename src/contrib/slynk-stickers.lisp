@@ -1,7 +1,7 @@
-(defpackage :slynk-stickers
+(defpackage :ls-stickers
   (:use :cl :ls-api)
   (:import-from :ls-backend :slynk-compile-string)
-  (:import-from :slynk :defslyfun :compile-string-for-emacs)
+  (:import-from :ls-base :defslyfun :compile-string-for-emacs)
   (:export #:record
            #:compile-for-stickers
            #:kill-stickers
@@ -12,7 +12,7 @@
            #:find-recording-or-lose
            #:search-for-recording
            #:toggle-break-on-stickers))
-(in-package :slynk-stickers)
+(in-package :ls-stickers)
 
 (defclass recording ()
   ((index :reader index-of)
@@ -334,10 +334,10 @@ As always, take the opportunity to kill DEAD-STICKERS"
 
 (defslyfun inspect-sticker (sticker-id)
   (let ((sticker (find-sticker-or-lose sticker-id)))
-    (slynk::inspect-object sticker)))
+    (ls-base::inspect-object sticker)))
 
 (defslyfun inspect-sticker-recording (recording-id vindex)
   (let ((recording (find-recording-or-lose recording-id vindex)))
-    (slynk::inspect-object recording)))
+    (ls-base::inspect-object recording)))
 
-(provide 'slynk-stickers)
+(provide 'ls-stickers)

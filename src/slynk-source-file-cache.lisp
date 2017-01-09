@@ -20,7 +20,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 
-(defpackage ls-source-file-cache
+(defpackage :ls-source-file-cache
   (:use cl ls-backend)
   (:import-from ls-backend
 		defimplementation buffer-first-change)

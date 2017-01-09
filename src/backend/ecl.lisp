@@ -8,7 +8,7 @@
 
 ;;; Administrivia
 
-(defpackage slynk-ecl
+(defpackage :slynk-ecl
   (:use cl ls-backend))
 
 (in-package slynk-ecl)

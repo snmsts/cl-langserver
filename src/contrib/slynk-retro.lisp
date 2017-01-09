@@ -1,7 +1,7 @@
-(defpackage :slynk-retro
-  (:use :cl :slynk :ls-api))
+(defpackage :ls-retro
+  (:use :cl :ls-base :ls-api))
 
-(in-package :slynk-retro)
+(in-package :ls-retro)
 
 (defun ensure-slynk-package-nicknames (&rest ignored)
   "Nickname all SLYNK-* package to SWANK-*"
@@ -24,6 +24,6 @@
 
 (ensure-slynk-package-nicknames)
 
-(provide :slynk-retro)
+(provide :ls-retro)
 
 

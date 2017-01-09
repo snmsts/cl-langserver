@@ -8,7 +8,7 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage slynk-lispworks
+(defpackage :slynk-lispworks
   (:use cl ls-backend))
 
 (in-package slynk-lispworks)

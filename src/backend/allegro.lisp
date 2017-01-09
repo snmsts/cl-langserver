@@ -8,7 +8,7 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage slynk-allegro
+(defpackage :slynk-allegro
   (:use cl ls-backend))
 
 (in-package slynk-allegro)
