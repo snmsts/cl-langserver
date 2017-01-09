@@ -6,11 +6,11 @@
 ;;;
 ;;; This is the CMUCL implementation of the `ls-backend' package.
 
-(defpackage :slynk-cmucl
+(defpackage :ls-cmucl
   (:use cl ls-backend ls-source-path-parser ls-source-file-cache
         fwrappers))
 
-(in-package slynk-cmucl)
+(in-package ls-cmucl)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
 

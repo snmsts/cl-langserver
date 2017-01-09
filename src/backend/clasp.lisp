@@ -8,10 +8,10 @@
 
 ;;; Administrivia
 
-(defpackage :slynk-clasp
+(defpackage :ls-clasp
   (:use cl ls-backend))
 
-(in-package slynk-clasp)
+(in-package ls-clasp)
 
 
 (defmacro cslime-log (fmt &rest fmt-args)

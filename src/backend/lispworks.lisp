@@ -8,10 +8,10 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage :slynk-lispworks
+(defpackage :ls-lispworks
   (:use cl ls-backend))
 
-(in-package slynk-lispworks)
+(in-package ls-lispworks)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require "comm"))

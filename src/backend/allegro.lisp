@@ -8,10 +8,10 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage :slynk-allegro
+(defpackage :ls-allegro
   (:use cl ls-backend))
 
-(in-package slynk-allegro)
+(in-package ls-allegro)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require :sock)

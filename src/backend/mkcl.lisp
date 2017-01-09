@@ -8,10 +8,10 @@
 
 ;;; Administrivia
 
-(defpackage :slynk-mkcl
+(defpackage :ls-mkcl
   (:use cl ls-backend))
 
-(in-package slynk-mkcl)
+(in-package ls-mkcl)
 
 ;;(declaim (optimize (debug 3)))
 

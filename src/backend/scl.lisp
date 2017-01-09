@@ -6,10 +6,10 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage :slynk-scl
+(defpackage :ls-scl
   (:use cl ls-backend ls-source-path-parser ls-source-file-cache))
 
-(in-package slynk-scl)
+(in-package ls-scl)
 
 
 

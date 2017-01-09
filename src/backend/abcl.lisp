@@ -8,10 +8,10 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage :slynk-abcl
+(defpackage :ls-abcl
   (:use cl ls-backend))
 
-(in-package slynk-abcl)
+(in-package ls-abcl)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require :collect) ;just so that it doesn't spoil the flying letters

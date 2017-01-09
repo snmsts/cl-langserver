@@ -8,10 +8,10 @@
 
 ;;; Administrivia
 
-(defpackage :slynk-ecl
+(defpackage :ls-ecl
   (:use cl ls-backend))
 
-(in-package slynk-ecl)
+(in-package ls-ecl)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun ecl-version ()
