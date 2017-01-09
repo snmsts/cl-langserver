@@ -19,7 +19,7 @@
 (defimplementation gray-package-name ()
   "STREAM")
 
-(import-slynk-mop-symbols :clos '(:slot-definition-documentation
+(import-ls-mop-symbols :clos '(:slot-definition-documentation
                                   :slot-boundp-using-class
                                   :slot-value-using-class
                                   :slot-makunbound-using-class

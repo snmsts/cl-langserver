@@ -15,7 +15,7 @@
 
 ;;; slynk-mop
 
-(import-slynk-mop-symbols :clos '(:slot-definition-documentation))
+(import-ls-mop-symbols :clos '(:slot-definition-documentation))
 
 (defun slynk-mop:slot-definition-documentation (slot)
   (documentation slot t))

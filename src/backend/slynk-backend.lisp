@@ -201,11 +201,11 @@ The portable code calls this function at startup."
 
 (defun import-to-slynk-mop (symbol-list)
   (dolist (sym symbol-list)
-    (let* ((slynk-mop-sym (find-symbol (symbol-name sym) :slynk-mop)))
+    (let* ((slynk-mop-sym (find-symbol (symbol-name sym) :ls-mop)))
       (when slynk-mop-sym
-        (unintern slynk-mop-sym :slynk-mop))
-      (import sym :slynk-mop)
-      (export sym :slynk-mop))))
+        (unintern slynk-mop-sym :ls-mop))
+      (import sym :ls-mop)
+      (export sym :ls-mop))))
 
 (defun import-ls-mop-symbols (package except)
   "Import the mop symbols from PACKAGE to SLYNK-MOP.

@@ -44,7 +44,7 @@
 ;;; Slynk-mop
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (import-slynk-mop-symbols
+  (import-ls-mop-symbols
    :clos
    (and (< (ecl-version) 121201)
         `(:eql-specializer

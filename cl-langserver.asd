@@ -22,42 +22,45 @@
   ((:module "src"
     :serial t
     :components
-    ((:file "slynk-backend")
-     ;; If/when we require ASDF3, we shall use :if-feature instead
-     #+(or cmu sbcl scl)
-     (:file "slynk-source-path-parser")
-     #+(or cmu ecl sbcl scl)
-     (:file "slynk-source-file-cache")
-     #+clisp
-     (:file "xref")
-     #+(or clisp clozure)
-     (:file "metering")
-     (:module "backend"
+    ((:module "backend"
       :serial t
-      :components (#+allegro
-                   (:file "allegro")
-                   #+armedbear
-                   (:file "abcl")
-                   #+clisp
-                   (:file "clisp")
-                   #+clozure
-                   (:file "ccl")
-                   #+cmu
-                   (:file "cmucl")
-                   #+cormanlisp
-                   (:file "corman")
-                   #+ecl
-                   (:file "ecl")
-                   #+lispworks
-                   (:file "lispworks")
-                   #+sbcl
-                   (:file "sbcl")
-                   #+scl
-                   (:file "scl")
-                   #+mkcl
-                   (:file "mkcl")))
-     #-armedbear
-     (:file "slynk-gray")
+      :components
+      ((:file "backend")
+       ;; If/when we require ASDF3, we shall use :if-feature instead
+       #+(or cmu sbcl scl)
+       (:file "slynk-source-path-parser")
+       #+(or cmu ecl sbcl scl)
+       (:file "slynk-source-file-cache")
+       #+clisp
+       (:file "xref")
+       #+(or clisp clozure)
+       (:file "metering")
+       (:module "impls"
+        :serial t
+        :components (#+allegro
+                     (:file "allegro")
+                     #+armedbear
+                     (:file "abcl")
+                     #+clisp
+                     (:file "clisp")
+                     #+clozure
+                     (:file "ccl")
+                     #+cmu
+                     (:file "cmucl")
+                     #+cormanlisp
+                     (:file "corman")
+                     #+ecl
+                     (:file "ecl")
+                     #+lispworks
+                     (:file "lispworks")
+                     #+sbcl
+                     (:file "sbcl")
+                     #+scl
+                     (:file "scl")
+                     #+mkcl
+                     (:file "mkcl")))
+       #-armedbear
+       (:file "slynk-gray")))
      (:file "slynk-match")
      (:file "slynk-rpc")
      (:file "slynk")
@@ -66,12 +69,12 @@
 (defsystem :slynk-util
   :components ((:file "src/slynk-util")))
 
-(defmethod perform :after ((o load-op) (c (eql (find-system :slynk))))
+(defmethod perform :after ((o load-op) (c (eql (find-system :cl-langserver))))
   (format *debug-io* "~&SLYNK's ASDF loader finished.")
   (funcall (read-from-string "ls-base::init")))
 
 #+sbcl
-(defmethod operate :around ((o load-op) (c (eql (find-system :slynk))) &key &allow-other-keys)
+(defmethod operate :around ((o load-op) (c (eql (find-system :cl-langserver))) &key &allow-other-keys)
   (let ((asdf:*compile-file-failure-behaviour* :warn)
         (sb-ext:*on-package-variance* '(:warn t)))
     (call-next-method)))

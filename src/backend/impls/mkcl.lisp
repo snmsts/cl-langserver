@@ -22,7 +22,7 @@
 
 (eval-when (:compile-toplevel :load-toplevel)
 
-  (ls-backend::import-slynk-mop-symbols :clos
+  (ls-backend::import-ls-mop-symbols :clos
     ;;  '(:eql-specializer
     ;;    :eql-specializer-object
     ;;    :generic-function-declarations

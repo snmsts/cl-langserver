@@ -60,7 +60,7 @@
 
 #+#.(cl:if slynk-clisp::*have-mop* '(cl:and) '(cl:or))
 (progn
-  (import-slynk-mop-symbols :clos '(:slot-definition-documentation))
+  (import-ls-mop-symbols :clos '(:slot-definition-documentation))
 
   (defun slynk-mop:slot-definition-documentation (slot)
     (clos::slot-definition-documentation slot)))

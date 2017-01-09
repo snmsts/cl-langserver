@@ -20,7 +20,7 @@
 
   (require 'gray-streams))
 
-(import-slynk-mop-symbols :pcl '(:slot-definition-documentation))
+(import-ls-mop-symbols :pcl '(:slot-definition-documentation))
 
 (defun slynk-mop:slot-definition-documentation (slot)
   (documentation slot t))

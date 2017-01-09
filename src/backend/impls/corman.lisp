@@ -125,7 +125,7 @@
   (declare (ignore slot))
   t)
 
-(import-slynk-mop-symbols :cl '(;; classes
+(import-ls-mop-symbols :cl '(;; classes
                                 :standard-slot-definition
                                 :eql-specializer
                                 :eql-specializer-object
