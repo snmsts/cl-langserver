@@ -11,7 +11,7 @@
 ;;; available to us here via the `SLYNK-BACKEND' package.
 
 (defpackage :slynk
-  (:use :cl :ls-backend :slynk-match :slynk-rpc)
+  (:use :cl :ls-backend :ls-match :ls-rpc)
   (:export #:startup-multiprocessing
            #:start-server
            #:create-server

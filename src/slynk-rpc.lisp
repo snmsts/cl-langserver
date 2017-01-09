@@ -8,7 +8,7 @@
 ;;; are disclaimed.
 ;;;
 
-(defpackage #:slynk-rpc
+(defpackage #:ls-rpc
   (:use :cl)
   (:export 
    #:read-message
@@ -18,7 +18,7 @@
    #:write-message
    #:*translating-swank-to-slynk*))
 
-(in-package :slynk-rpc)
+(in-package :ls-rpc)
 
 
 ;;;;; Input

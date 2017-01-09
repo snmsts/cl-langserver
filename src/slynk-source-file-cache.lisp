@@ -20,7 +20,7 @@
 ;;; This code has been placed in the Public Domain.  All warranties
 ;;; are disclaimed.
 
-(defpackage slynk-source-file-cache
+(defpackage ls-source-file-cache
   (:use cl ls-backend)
   (:import-from ls-backend
 		defimplementation buffer-first-change)
@@ -33,7 +33,7 @@
    read-snippet-from-string
    ))
 
-(in-package slynk-source-file-cache)
+(in-package ls-source-file-cache)
 
 (defvar *cache-sourcecode* t
   "When true complete source files are cached.

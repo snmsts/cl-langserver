@@ -84,11 +84,11 @@
 ;;      case, like OTHER above.
 ;;
 
-(defpackage :slynk-match
+(defpackage :ls-match
   (:use :cl)
   (:export #:match))
 
-(in-package :slynk-match)
+(in-package :ls-match)
 
 (defmacro match (expression &body patterns)
   `(select-match ,expression ,@patterns))

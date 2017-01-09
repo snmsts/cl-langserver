@@ -18,7 +18,7 @@
                              (package-nicknames package))
                             :test #'string-equal))))
 
-(setq slynk-rpc:*translating-swank-to-slynk* nil)
+(setq ls-rpc:*translating-swank-to-slynk* nil)
 (push #'ensure-slynk-package-nicknames
       slynk-api:*slynk-require-hook*)
 

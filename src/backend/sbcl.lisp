@@ -12,7 +12,7 @@
 ;;; Administrivia
 
 (defpackage ls-sbcl
-  (:use cl ls-backend slynk-source-path-parser slynk-source-file-cache)
+  (:use cl ls-backend ls-source-path-parser ls-source-file-cache)
   (:export
    #:with-sbcl-version>=))
 
@@ -1793,14 +1793,14 @@ stack."
   ;; SLY-OUTPUT-STREAM, and be done, but that class doesn't exist when this
   ;; file is loaded -- so first we need a dummy definition that will be
   ;; overridden by slynk-gray.lisp.
-  #.(unless (find-package 'slynk-gray) (make-package 'slynk-gray) nil)
+  #.(unless (find-package 'ls-gray) (make-package 'ls-gray) nil)
   (eval-when (:load-toplevel :execute)
-    (unless (find-package 'slynk-gray) (make-package 'slynk-gray) nil))
-  (defclass slynk-gray::sly-output-stream
+    (unless (find-package 'ls-gray) (make-package 'ls-gray) nil))
+  (defclass ls-gray::sly-output-stream
       (sb-gray:fundamental-character-output-stream)
     ())
   (defmethod sb-gray:stream-force-output
-      :around ((stream slynk-gray::sly-output-stream))
+      :around ((stream ls-gray::sly-output-stream))
     (handler-case
         (sb-sys:with-deadline (:seconds 0.1)
           (call-next-method))

@@ -7,7 +7,7 @@
 ;;;
 
 (defpackage slynk-scl
-  (:use cl ls-backend slynk-source-path-parser slynk-source-file-cache))
+  (:use cl ls-backend ls-source-path-parser ls-source-file-cache))
 
 (in-package slynk-scl)
 

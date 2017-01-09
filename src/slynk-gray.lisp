@@ -30,12 +30,12 @@
       stream-read-char-no-hang))
     nil)
 
-(defpackage slynk-gray
+(defpackage ls-gray
   (:use cl ls-backend)
   (:import-from #.(gray-package-name) . #.*gray-stream-symbols*)
   (:export . #.*gray-stream-symbols*))
 
-(in-package slynk-gray)
+(in-package ls-gray)
 
 (defclass sly-output-stream (fundamental-character-output-stream)
   ((output-fn :initarg :output-fn)

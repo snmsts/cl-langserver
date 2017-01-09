@@ -23,7 +23,7 @@
 
 ;;; Taken from slynk-cmucl.lisp, by Helmut Eller
 
-(defpackage slynk-source-path-parser
+(defpackage ls-source-path-parser
   (:use cl)
   (:export
    read-source-form
@@ -35,7 +35,7 @@
    sexp-ref)
   (:shadow ignore-errors))
 
-(in-package slynk-source-path-parser)
+(in-package ls-source-path-parser)
 
 ;; Some test to ensure the required conformance
 (let ((rt (copy-readtable nil)))
