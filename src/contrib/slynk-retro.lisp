@@ -1,5 +1,5 @@
 (defpackage :slynk-retro
-  (:use :cl :slynk :slynk-api))
+  (:use :cl :slynk :ls-api))
 
 (in-package :slynk-retro)
 
@@ -20,7 +20,7 @@
 
 (setq ls-rpc:*translating-swank-to-slynk* nil)
 (push #'ensure-slynk-package-nicknames
-      slynk-api:*slynk-require-hook*)
+      ls-api:*slynk-require-hook*)
 
 (ensure-slynk-package-nicknames)
 

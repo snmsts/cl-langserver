@@ -2,8 +2,8 @@
 ;;
 ;; Licence: public domain
 
-(defpackage :slynk-mrepl
-  (:use :cl :slynk-api)
+(defpackage :ls-mrepl
+  (:use :cl :ls-api)
   (:export #:create-mrepl
            #:globally-save-object
            #:eval-for-mrepl
@@ -16,7 +16,7 @@
            #:*use-dedicated-output-stream*
            #:*dedicated-output-stream-port*
            #:*dedicated-output-stream-buffering*))
-(in-package :slynk-mrepl)
+(in-package :ls-mrepl)
 
 
 ;;; MREPL models
@@ -39,7 +39,7 @@
     (format stream "mrepl-~a-~a" (channel-id r) (mrepl-remote-id r))))
 
 (defmethod initialize-instance :before ((r mrepl) &key)
-  (setf (slot-value r 'slynk::in) (make-mrepl-input-stream r)))
+  (setf (slot-value r 'ls-base::in) (make-mrepl-input-stream r)))
 
 
 ;;; Helpers
@@ -48,7 +48,7 @@
 
 (defvar *saved-objects* nil)
 
-(defmethod slynk::drop-unprocessed-events ((r mrepl))
+(defmethod ls-base::drop-unprocessed-events ((r mrepl))
   "Empty REPL of events, then send prompt to Emacs."
   ;; FIXME: Dropping events should be moved to the library, and this
   ;; :DROP nonsense dropped, hence the deliberate SLYNK::.
@@ -185,7 +185,7 @@ Set this to NIL to turn this feature off.")
           (cond (aborted
                  (send-to-remote-channel (mrepl-remote-id repl)
                                          `(:evaluation-aborted
-                                           ,(slynk::without-printing-errors
+                                           ,(ls-base::without-printing-errors
                                                 (:object aborted :stream nil)
                                               (prin1-to-string aborted)))))
                 (t
@@ -254,7 +254,7 @@ Set this to NIL to turn this feature off.")
                                         (setq +++ ++ ++ + + form)))))
                     finally
                     (return values))))
-        (setf (cdr (assoc '*package* (slot-value repl 'slynk::env)))
+        (setf (cdr (assoc '*package* (slot-value repl 'ls-base::env)))
               *package*)))))
 
 (defun set-mode (repl new-mode)
@@ -283,7 +283,7 @@ Set this to NIL to turn this feature off.")
     (send-to-remote-channel
        (mrepl-remote-id r)
        `(:inspect-object
-         ,(slynk::inspect-object (mrepl-get-object-from-history entry-idx value-idx))))))
+         ,(ls-base::inspect-object (mrepl-get-object-from-history entry-idx value-idx))))))
 
 (define-channel-method :process ((c mrepl) string)
   (ecase (mrepl-mode c)
@@ -378,17 +378,17 @@ list."
 
 (defslyfun inspect-entry (remote-id entry-idx value-idx)
   (with-eval-for-repl (remote-id)
-    (slynk::inspect-object
+    (ls-base::inspect-object
      (mrepl-get-object-from-history entry-idx value-idx))))
 
 (defslyfun describe-entry (remote-id entry-idx value-idx)
   (with-eval-for-repl (remote-id)
-    (slynk::describe-to-string
+    (ls-base::describe-to-string
      (mrepl-get-object-from-history entry-idx value-idx))))
 
 (defslyfun pprint-entry (remote-id entry-idx value-idx)
   (with-eval-for-repl (remote-id)
-    (slynk::slynk-pprint
+    (ls-base::slynk-pprint
      (list (mrepl-get-object-from-history entry-idx value-idx)))))
 
 
@@ -399,7 +399,7 @@ list."
 ;;;
 
 (defslyfun guess-and-set-package (package-name)
-  (let ((package (slynk::guess-package package-name)))
+  (let ((package (ls-base::guess-package package-name)))
     (if package
         (setq *package* package)
         (error "Can't find a package for designator ~a" package-name))
@@ -423,7 +423,7 @@ list."
 
 (defslyfun sync-package-and-default-directory (&key package-name directory)
   (when directory
-    (slynk:set-default-directory directory))
+    (ls-base:set-default-directory directory))
   (when package-name
     (guess-and-set-package package-name))
   (values (package-name *package*) (ls-backend:default-directory)))
@@ -438,7 +438,7 @@ list."
   "Which port we should use for the dedicated output stream.")
 
 (defparameter *dedicated-output-stream-buffering*
-  (if (eq slynk:*communication-style* :spawn) :line nil)
+  (if (eq ls-base:*communication-style* :spawn) :line nil)
   "The buffering scheme that should be used for the output stream.
 Be advised that some Lisp backends don't support this.
 Valid values are nil, t, :line.")
@@ -462,9 +462,9 @@ Emacs's channel at REMOTE-ID is notified of a socket listening at an
 ephemeral port. Upon connection, the listening socket is closed, and
 the resulting connecion socket is used as optimized way for Lisp to
 deliver output to Emacs."
-  (let ((socket (ls-backend:create-socket slynk::*loopback-interface*
+  (let ((socket (ls-backend:create-socket ls-base::*loopback-interface*
                                              *dedicated-output-stream-port*))
-        (ef (or (some #'slynk::find-external-format '("utf-8-unix" "utf-8"))
+        (ef (or (some #'ls-base::find-external-format '("utf-8-unix" "utf-8"))
                 (error "no suitable coding system for dedicated stream"))))
     (unwind-protect
          (let ((port (ls-backend:local-port socket)))
@@ -475,7 +475,7 @@ deliver output to Emacs."
                              :external-format ef
                              :buffering *dedicated-output-stream-buffering*
                              :timeout 30)))
-             (slynk:authenticate-client dedicated)
+             (ls-base:authenticate-client dedicated)
              (ls-backend:close-socket socket)
              (setf socket nil)
              ;; See github issue #21: Only sbcl and cmucl apparently
@@ -575,7 +575,7 @@ dynamic binding."
     ;; Assign the real binding as a synonym for the current one.
     (let ((stream (make-synonym-stream current-stream-var)))
       (set stream-var stream)
-      (slynk::set-default-initial-binding stream-var `(quote ,stream)))))
+      (ls-base::set-default-initial-binding stream-var `(quote ,stream)))))
 
 (defun prefixed-var (prefix variable-symbol)
   "(PREFIXED-VAR \"FOO\" '*BAR*) => SLYNK::*FOO-BAR*"
@@ -622,7 +622,7 @@ Assigns *CURRENT-<STREAM>* for all standard streams."
   ;; redirection are about to be reverted might be in an unconsistent
   ;; state after, for instance, restarting an image.
   ;;
-  (format slynk:*log-output* "~&; About to revert global IO direction~%")
+  (format ls-base:*log-output* "~&; About to revert global IO direction~%")
   (when *target-listener-for-redirection*
     (flush-listener-streams *target-listener-for-redirection*))
   (dolist (stream-var (append *standard-output-streams*
@@ -658,4 +658,4 @@ Return the current redirection target, or nil"
       (revert-global-io-redirection)
       (format *standard-output* "~&; Reverted global IO direction~%"))))
 
-(provide :slynk-mrepl)
+(provide :ls-mrepl)

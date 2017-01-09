@@ -1,5 +1,5 @@
 (defpackage :slynk-trace-dialog
-  (:use :cl :slynk-api)
+  (:use :cl :ls-api)
   (:export #:clear-trace-tree
            #:dialog-toggle-trace
            #:dialog-trace

@@ -10,7 +10,7 @@
 ;;; them separately for each Lisp implementation. These extensions are
 ;;; available to us here via the `SLYNK-BACKEND' package.
 
-(defpackage :slynk
+(defpackage :ls-base
   (:use :cl :ls-backend :ls-match :ls-rpc)
   (:export #:startup-multiprocessing
            #:start-server
@@ -68,7 +68,7 @@
            #:*echo-number-alist*
            #:*present-number-alist*))
 
-(in-package :slynk)
+(in-package :ls-base)
 
 
 ;;;; Top-level variables, constants, macros
@@ -345,7 +345,7 @@ documentation string."
 ;;;;; Logging
 
 (defvar *slynk-io-package*
-  (let ((package (make-package :slynk-io-package :use '())))
+  (let ((package (make-package :ls-io-package :use '())))
     (import '(nil t quote) package)
     package))
 
@@ -4157,7 +4157,7 @@ Collisions are caused because package information is ignored."
 
 ;;;; The "official" API
 
-(defpackage :slynk-api (:use))
+(defpackage :ls-api (:use))
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (let ((api '(#:*emacs-connection*
                #:default-connection
@@ -4228,11 +4228,11 @@ Collisions are caused because package information is ignored."
                #:slynk-pprint-values
                #:slynk-pprint-to-line)))
     (loop for sym in api
-          for slynk-api-sym = (intern (string sym) :slynk-api)
-          for slynk-sym = (intern (string sym) :slynk)
-          do (unintern slynk-api-sym :slynk-api)
-             (import slynk-sym :slynk-api)
-             (export slynk-sym :slynk-api))))
+          for slynk-api-sym = (intern (string sym) :ls-api)
+          for slynk-sym = (intern (string sym) :ls-base)
+          do (unintern slynk-api-sym :ls-api)
+             (import slynk-sym :ls-api)
+             (export slynk-sym :ls-api))))
 
 
 ;;;; INIT, as called from the slynk-loader.lisp and ASDF's loaders
@@ -4249,8 +4249,8 @@ Collisions are caused because package information is ignored."
               (make-pathname :name ".swankrc"))))
 
 (defun init ()
-  (unless (member :slynk *features*)
-    (pushnew :slynk *features*))
+  (unless (member :language-server *features*)
+    (pushnew :language-server *features*))
   (load-user-init-file)
   (run-hook *after-init-hook*))
 

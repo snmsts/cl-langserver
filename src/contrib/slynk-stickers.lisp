@@ -1,5 +1,5 @@
 (defpackage :slynk-stickers
-  (:use :cl :slynk-api)
+  (:use :cl :ls-api)
   (:import-from :ls-backend :slynk-compile-string)
   (:import-from :slynk :defslyfun :compile-string-for-emacs)
   (:export #:record
@@ -240,7 +240,7 @@ strings. EXITED-NON-LOCALLY-P is an integer."
   (list (index-of recording)
         (and (listp (values-of recording))
              (loop for value in (values-of recording)
-                   collect (slynk-api:present-for-emacs value)))
+                   collect (ls-api:present-for-emacs value)))
         (exited-non-locally-p recording)))
 
 (defun describe-sticker-for-emacs (sticker &optional recording)

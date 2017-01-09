@@ -68,7 +68,7 @@
 
 (defmethod perform :after ((o load-op) (c (eql (find-system :slynk))))
   (format *debug-io* "~&SLYNK's ASDF loader finished.")
-  (funcall (read-from-string "slynk::init")))
+  (funcall (read-from-string "ls-base::init")))
 
 #+sbcl
 (defmethod operate :around ((o load-op) (c (eql (find-system :slynk))) &key &allow-other-keys)

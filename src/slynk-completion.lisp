@@ -3,13 +3,13 @@
 ;; Authors: João Távora, some parts derivative works of SLIME, by its
 ;; authors.
 ;;
-(defpackage :slynk-completion
-  (:use #:cl #:slynk-api)
+(defpackage :ls-completion
+  (:use #:cl #:ls-api)
   (:export
    #:flex-completions
    #:simple-completions))
 
-(in-package :slynk-completion)
+(in-package :ls-completion)
 
 
 ;;; Simple completion
@@ -20,8 +20,8 @@
     (list strings (longest-common-prefix strings))))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (import 'simple-completions :slynk)
-  (export 'simple-completions :slynk))
+  (import 'simple-completions :ls-base)
+  (export 'simple-completions :ls-base))
 
 (defun all-simple-completions (prefix package)
   (multiple-value-bind (name pname intern) (tokenize-symbol prefix)
@@ -182,7 +182,7 @@ Returns two values: \(A B C\) and \(1 2 3\)."
                        ;; length.
                        ;;
                        for nickname in sorted-nicknames
-                       for external-p = (slynk::symbol-external-p s)
+                       for external-p = (ls-base::symbol-external-p s)
                        do
                           (cond (external-p
                                  (collect-maybe #'collect-external
@@ -230,7 +230,7 @@ Returns a list of (COMPLETIONS NIL). COMPLETIONS is a list of
               (list (funcall convert string)
                     score
                     (to-chunks string indexes)
-                    (slynk::symbol-classification-string symbol)))
+                    (ls-base::symbol-classification-string symbol)))
             nil))))
 
-(provide :slynk-completion)
+(provide :ls-completion)

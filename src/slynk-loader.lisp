@@ -251,7 +251,7 @@ If LOAD is true, load the fasl file."
   (load-slynk))
 
 (defun setup ()
-  (funcall (q "slynk::init")))
+  (funcall (q "ls-base::init")))
 
 (defun string-starts-with (string prefix)
   (string-equal string prefix :end1 (min (length string) (length prefix))))
@@ -288,8 +288,8 @@ global variabes in SLYNK."
        "LOAD-CONTRIBS arg to SLYNK-LOADER:INIT is deprecated and useless"))
   (when (and delete (find-package :slynk))
     (delete-packages (list-slynk-packages))
-    (mapc #'delete-package '(:slynk :slynk-io-package :ls-backend)))
-  (cond ((or (not (find-package :slynk)) reload)
+    (mapc #'delete-package '(:ls-base :ls-io-package :ls-backend)))
+  (cond ((or (not (find-package :ls-base)) reload)
          (load-slynk :quiet quiet))
         (t
          (warn "Not reloading SLYNK.  Package already exists.")))
