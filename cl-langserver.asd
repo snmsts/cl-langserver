@@ -17,7 +17,7 @@
 ;; This code has been placed in the Public Domain.  All warranties
 ;; are disclaimed.
 
-(defsystem :slynk
+(defsystem :cl-langserver
   :components
   ((:module "src"
     :serial t
@@ -80,38 +80,37 @@
 ;;; Contrib systems (should probably go into their own file one day)
 ;;;
 (defsystem :slynk-arglists
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-arglists")))
 
 (defsystem :slynk-fancy-inspector
-  :depends-on (:slynk :slynk-util)
+  :depends-on (:cl-langserver :slynk-util)
   :components ((:file "src/contrib/slynk-fancy-inspector")))
 
 (defsystem :slynk-package-fu
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-package-fu")))
 
 (defsystem :slynk-mrepl
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-mrepl")))
 
 (defsystem :slynk-trace-dialog
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-trace-dialog")))
 
 (defsystem :slynk-profiler
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-profiler")))
 
 (defsystem :slynk-stickers
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-stickers")))
 
 (defsystem :slynk-indentation
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-indentation")))
 
 (defsystem :slynk-retro
-  :depends-on (:slynk)
+  :depends-on (:cl-langserver)
   :components ((:file "src/contrib/slynk-retro")))
-
