@@ -299,26 +299,26 @@
 ;;; Profiling (alanr: lifted from slynk-clisp)
 
 (defimplementation profile (fname)
-  (eval `(slynk-monitor:monitor ,fname)))		;monitor is a macro
+  (eval `(ls-monitor:monitor ,fname)))		;monitor is a macro
 
 (defimplementation profiled-functions ()
-  slynk-monitor:*monitored-functions*)
+  ls-monitor:*monitored-functions*)
 
 (defimplementation unprofile (fname)
-  (eval `(slynk-monitor:unmonitor ,fname)))	;unmonitor is a macro
+  (eval `(ls-monitor:unmonitor ,fname)))	;unmonitor is a macro
 
 (defimplementation unprofile-all ()
-  (slynk-monitor:unmonitor))
+  (ls-monitor:unmonitor))
 
 (defimplementation profile-report ()
-  (slynk-monitor:report-monitoring))
+  (ls-monitor:report-monitoring))
 
 (defimplementation profile-reset ()
-  (slynk-monitor:reset-all-monitoring))
+  (ls-monitor:reset-all-monitoring))
 
 (defimplementation profile-package (package callers-p methods)
   (declare (ignore callers-p methods))
-  (slynk-monitor:monitor-all package))
+  (ls-monitor:monitor-all package))
 
 ;;; Debugging
 
