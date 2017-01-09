@@ -2893,7 +2893,7 @@ Record compiler notes signalled as `compiler-condition's."
 
 ;;;;; slynk-require
 
-(defvar *module-loading-method* (find-if #'find-package '(:slynk-loader :asdf))
+(defvar *module-loading-method* (find-if #'find-package '(:ls-loader :asdf))
   "Keyword naming the module-loading method.
 
 SLY's own `slynk-loader.lisp' is tried first, then ASDF")
@@ -2903,8 +2903,8 @@ SLY's own `slynk-loader.lisp' is tried first, then ASDF")
    "Use METHOD to load MODULE.
 Receives a module name as argument and should return non-nil if it
 managed to load it.")
-  (:method ((method (eql :slynk-loader)) module)
-    (funcall (intern "REQUIRE-MODULE" :slynk-loader) module))
+  (:method ((method (eql :ls-loader)) module)
+    (funcall (intern "REQUIRE-MODULE" :ls-loader) module))
   (:method ((method (eql :asdf)) module)
     (funcall (intern "LOAD-SYSTEM" :asdf) module)))
 
@@ -2914,8 +2914,8 @@ managed to load it.")
 (defgeneric add-to-load-path (method path)
   (:documentation
    "Using METHOD, consider PATH when searching for modules.")
-  (:method ((method (eql :slynk-loader)) path)
-    (add-to-load-path-1 path (intern "*LOAD-PATH*" :slynk-loader)))
+  (:method ((method (eql :ls-loader)) path)
+    (add-to-load-path-1 path (intern "*LOAD-PATH*" :ls-loader)))
   (:method ((method (eql :asdf)) path)
     (add-to-load-path-1 path (intern "*CENTRAL-REGISTRY*" :asdf))))
 

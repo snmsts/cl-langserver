@@ -721,8 +721,8 @@ Execute BODY with NAME's function slot set to FUNCTION."
       (push (fspec-location symbol symbol) xrefs))
     xrefs))
 
-(when (find-package :slynk-loader)
-  (setf (symbol-function (intern "USER-INIT-FILE" :slynk-loader))
+(when (find-package :ls-loader)
+  (setf (symbol-function (intern "USER-INIT-FILE" :ls-loader))
         (lambda ()
           (let ((home (user-homedir-pathname)))
             (and (ext:probe-directory home)

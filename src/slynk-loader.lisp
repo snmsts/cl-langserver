@@ -9,15 +9,15 @@
 ;;;
 
 ;; If you want customize the source- or fasl-directory you can set
-;; slynk-loader:*source-directory* resp. slynk-loader:*fasl-directory*
+;; ls-loader:*source-directory* resp. ls-loader:*fasl-directory*
 ;; before loading this files.
 ;; E.g.:
 ;;
 ;;   (load ".../slynk-loader.lisp")
-;;   (setq slynk-loader::*fasl-directory* "/tmp/fasl/")
-;;   (slynk-loader:init)
+;;   (setq ls-loader::*fasl-directory* "/tmp/fasl/")
+;;   (ls-loader:init)
 
-(cl:defpackage :slynk-loader
+(cl:defpackage :ls-loader
   (:use :cl)
   (:export #:init
            #:dump-image
@@ -25,7 +25,7 @@
            #:*fasl-directory*
            #:*load-path*))
 
-(cl:in-package :slynk-loader)
+(cl:in-package :ls-loader)
 
 (defvar *source-directory*
   (make-pathname :name nil :type nil
@@ -259,7 +259,7 @@ If LOAD is true, load the fasl file."
 (defun list-slynk-packages ()
   (remove-if-not (lambda (package)
                    (let ((name (package-name package)))
-                     (and (string-not-equal name "slynk-loader")
+                     (and (string-not-equal name "ls-loader")
                           (string-starts-with name "slynk"))))
                  (list-all-packages)))
 
@@ -285,7 +285,7 @@ If SETUP is true, load user init files and initialize some
 global variabes in SLYNK."
   (if load-contribs
       (warn
-       "LOAD-CONTRIBS arg to SLYNK-LOADER:INIT is deprecated and useless"))
+       "LOAD-CONTRIBS arg to LS-LOADER:INIT is deprecated and useless"))
   (when (and delete (find-package :slynk))
     (delete-packages (list-slynk-packages))
     (mapc #'delete-package '(:ls-base :ls-io-package :ls-backend)))

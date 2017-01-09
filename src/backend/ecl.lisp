@@ -408,15 +408,15 @@
 ;;    (member (symbol-package x)
 ;;            (list #.(find-package :slynk)
 ;;                  #.(find-package :ls-backend)
-;;                  #.(ignore-errors (find-package :slynk-mop))
-;;                  #.(ignore-errors (find-package :slynk-loader))))
+;;                  #.(ignore-errors (find-package :ls-mop))
+;;                  #.(ignore-errors (find-package :ls-loader))))
 ;;    t))
 
 ;; (defun is-slynk-source-p (name)
 ;;   (setf name (pathname name))
 ;;   (pathname-match-p
 ;;    name
-;;    (make-pathname :defaults slynk-loader::*source-directory*
+;;    (make-pathname :defaults ls-loader::*source-directory*
 ;;                   :name (pathname-name name)
 ;;                   :type (pathname-type name)
 ;;                   :version (pathname-version name))))
