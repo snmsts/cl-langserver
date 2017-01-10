@@ -61,6 +61,19 @@
        #-armedbear
        (:file "slynk-gray")))))))
 
+(defsystem :cl-langserver
+  :depends-on
+  #+ros.init ("fukamachi/jsonrpc")
+  #-ros.init (:jsonrpc)
+  :components
+  ((:module "src"
+    :serial t
+    :components
+    ((:file "defs")
+     (:file "hooks")
+     (:file "connections")
+     ))))
+
 (defsystem :langserver-helitage
   :depends-on (:langserver-backend)
   :components

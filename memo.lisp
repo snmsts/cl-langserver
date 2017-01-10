@@ -10,3 +10,13 @@
 ;; -> eval(channel-id,exp,env,opt) (result)                ;; need to think about generalized opt.
 ;; <- dialog                       (channel-id,msg,choice) ;; y-n/debugger/
 ;; <| writeString                  (channel-id,str)
+
+
+;;impl
+;;*slynk-debug-p* -> *langserver-debug-p*
+;;defslyfun -> defrpcfun
+;;*emacs-connection* -> *client-connection*
+
+
+;;note
+;; don't support (clisp cmucl corman ecl) cause not spawn
