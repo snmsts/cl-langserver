@@ -7,7 +7,7 @@
 ;; Usage:
 ;;
 ;;   (push #p"/path/to/this/file/" asdf:*central-registry*)
-;;   (asdf:load-system :slynk)
+;;   (asdf:load-system :langserver-helitage)
 ;;   (slynk:create-server :port PORT) => ACTUAL-PORT
 ;;
 ;; (PORT can be zero to mean "any available port".)
@@ -16,8 +16,7 @@
 ;;
 ;; This code has been placed in the Public Domain.  All warranties
 ;; are disclaimed.
-
-(defsystem :cl-langserver
+(defsystem :langserver-backend
   :components
   ((:module "src"
     :serial t
@@ -60,59 +59,69 @@
                      #+mkcl
                      (:file "mkcl")))
        #-armedbear
-       (:file "slynk-gray")))
-     (:file "slynk-match")
-     (:file "slynk-rpc")
-     (:file "defs")
-     (:file "hooks")
-     (:file "connections")
-     (:file "log")
-     (:file "channels")
-     (:file "listeners")
-     (:file "interrupts")
-     (:file "sentinel")
-     (:file "misc")
-     (:file "symbols")
-     (:file "tcp")
-     (:file "events")
-     (:file "events-thread")
-     (:file "events-flowcontrol")
-     (:file "events-signal")
-     (:file "events-serve-event")
-     (:file "events-simple")
-     (:file "inteructions")
-     (:file "read-print")
-     (:file "eval")
-     (:file "prompt")
-     (:file "debugger")
-     (:file "compilation")
-     (:file "macroexpansion")
-     (:file "arglist")
-     (:file "documentation")
-     (:file "package")
-     (:file "trace")
-     (:file "undefine")
-     (:file "source-location")
-     (:file "lazy-list")
-     (:file "inspect")
-     (:file "thread-list")
-     (:file "class-browser")
-     (:file "sync")
-     (:file "indentation")
-     (:file "test")
-     (:file "api")
-     (:file "init")
-     (:file "slynk-completion")))))
+       (:file "slynk-gray")))))))
 
-(defsystem :slynk-util
-  :components ((:file "src/slynk-util")))
+(defsystem :langserver-helitage
+  :depends-on (:langserver-backend)
+  :components
+  ((:module "src"
+    :serial t
+    :components
+    ((:module "helitage"
+      :serial t
+      :components
+      ((:file "slynk-match")
+       (:file "slynk-rpc")
+       (:file "defs")
+       (:file "hooks")
+       (:file "connections")
+       (:file "log")
+       (:file "channels")
+       (:file "listeners")
+       (:file "interrupts")
+       (:file "sentinel")
+       (:file "misc")
+       (:file "symbols")
+       (:file "tcp")
+       (:file "events")
+       (:file "events-thread")
+       (:file "events-flowcontrol")
+       (:file "events-signal")
+       (:file "events-serve-event")
+       (:file "events-simple")
+       (:file "inteructions")
+       (:file "read-print")
+       (:file "eval")
+       (:file "prompt")
+       (:file "debugger")
+       (:file "compilation")
+       (:file "macroexpansion")
+       (:file "arglist")
+       (:file "documentation")
+       (:file "package")
+       (:file "trace")
+       (:file "undefine")
+       (:file "source-location")
+       (:file "lazy-list")
+       (:file "inspect")
+       (:file "thread-list")
+       (:file "class-browser")
+       (:file "sync")
+       (:file "indentation")
+       (:file "test")
+       (:file "api")
+       (:file "init")
+       (:file "slynk-completion")))))))
 
-(defmethod perform :after ((o load-op) (c (eql (find-system :cl-langserver))))
+(defsystem :langserver-helitage-util
+  :components ((:file "src/helitage/slynk-util")))
+
+(defmethod perform :after ((o load-op) (c (eql (find-system :langserver-helitage))))
   (format *debug-io* "~&SLYNK's ASDF loader finished.")
   (funcall (read-from-string "ls-base::init")))
 
 #+sbcl
-(defmethod operate :around ((o load-op) (c (eql (find-system :cl-langserver))) &key &allow-other-keys)
+(defmethod operate :around ((o load-op) (c (eql (find-system :langserver-helitage))) &key &allow-other-keys)
   (let ((asdf:*compile-file-failure-behaviour* :warn)
         (sb-ext:*on-package-variance* '(:warn t)))
     (call-next-method)))
@@ -120,38 +129,38 @@
 
 ;;; Contrib systems (should probably go into their own file one day)
 ;;;
-(defsystem :slynk-arglists
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-arglists
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-arglists")))
 
-(defsystem :slynk-fancy-inspector
-  :depends-on (:cl-langserver :slynk-util)
+(defsystem :langserver-helitage-fancy-inspector
+  :depends-on (:langserver-helitage :langserver-helitage-util)
   :components ((:file "src/contrib/slynk-fancy-inspector")))
 
-(defsystem :slynk-package-fu
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-package-fu
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-package-fu")))
 
-(defsystem :slynk-mrepl
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-mrepl
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-mrepl")))
 
-(defsystem :slynk-trace-dialog
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-trace-dialog
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-trace-dialog")))
 
-(defsystem :slynk-profiler
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-profiler
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-profiler")))
 
-(defsystem :slynk-stickers
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-stickers
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-stickers")))
 
-(defsystem :slynk-indentation
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-indentation
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-indentation")))
 
-(defsystem :slynk-retro
-  :depends-on (:cl-langserver)
+(defsystem :langserver-helitage-retro
+  :depends-on (:langserver-helitage)
   :components ((:file "src/contrib/slynk-retro")))

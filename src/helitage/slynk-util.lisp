@@ -2,7 +2,7 @@
 ;;
 ;; License: public domain
 
-(in-package :slynk)
+(in-package :ls-base)
 
 (defmacro do-symbols* ((var &optional (package '*package*) result-form)
                        &body body)

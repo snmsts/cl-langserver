@@ -1,3 +1,4 @@
+(in-package :ls-base)
 ;;;;;; Flow control
 
 ;; After sending N (usually 100) messages we slow down and ping Emacs
