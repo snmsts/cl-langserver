@@ -63,8 +63,9 @@
 
 (defsystem :cl-langserver
   :depends-on
-  #+ros.init ("fukamachi/jsonrpc")
-  #-ros.init (:jsonrpc)
+  (#+ros.init "fukamachi/jsonrpc"
+   #-ros.init :jsonrpc
+   :langserver-backend)
   :components
   ((:module "src"
     :serial t
@@ -72,7 +73,45 @@
     ((:file "defs")
      (:file "hooks")
      (:file "connections")
-     ))))
+     (:file "log")
+     (:file "channels")
+     (:file "listeners")
+     #|
+     (:file "interrupts")
+     (:file "sentinel")
+     (:file "misc")
+     (:file "symbols")
+     (:file "tcp")
+     (:file "events")
+     (:file "events-thread")
+     (:file "events-flowcontrol")
+     (:file "events-signal")
+     (:file "events-serve-event")
+     (:file "events-simple")
+     (:file "inteructions")
+     (:file "read-print")
+     (:file "eval")
+     (:file "prompt")
+     (:file "debugger")
+     (:file "compilation")
+     (:file "macroexpansion")
+     (:file "arglist")
+     (:file "documentation")
+     (:file "package")
+     (:file "trace")
+     (:file "undefine")
+     (:file "source-location")
+     (:file "lazy-list")
+     (:file "inspect")
+     (:file "thread-list")
+     (:file "class-browser")
+     (:file "sync")
+     (:file "indentation")
+     (:file "test")
+     (:file "api")
+     (:file "init")
+     (:file "slynk-completion")
+     |#))))
 
 (defsystem :langserver-helitage
   :depends-on (:langserver-backend)

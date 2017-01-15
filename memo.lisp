@@ -16,6 +16,8 @@
 ;;*slynk-debug-p* -> *langserver-debug-p*
 ;;defslyfun -> defrpcfun
 ;;*emacs-connection* -> *client-connection*
+;;*slynk-io-package* -> *langserver-io-package*
+;;send-to-emacs -> send-to-client
 
 
 ;;note
