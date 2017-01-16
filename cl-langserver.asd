@@ -76,12 +76,12 @@
      (:file "log")
      (:file "channels")
      (:file "listeners")
-     #|
      (:file "interrupts")
      (:file "sentinel")
      (:file "misc")
      (:file "symbols")
      (:file "tcp")
+     #|
      (:file "events")
      (:file "events-thread")
      (:file "events-flowcontrol")

@@ -14,11 +14,15 @@
 
 ;;impl
 ;;*slynk-debug-p* -> *langserver-debug-p*
+;;signal-slynk-error -> signal-langserver-error
 ;;defslyfun -> defrpcfun
+;;with-slynk-error-handler -> with-langserver-error-handler
 ;;*emacs-connection* -> *client-connection*
 ;;*slynk-io-package* -> *langserver-io-package*
 ;;send-to-emacs -> send-to-client
-
+;;*sly-interrupts-enabled* -> *client-interrupts-enabled*
+;;without-sly-interrupts -> without-client-interrupts
+;;slynk-debugger-hook -> langserver-debugger-hook
 
 ;;note
 ;; don't support (clisp cmucl corman ecl) cause not spawn
